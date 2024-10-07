@@ -1,13 +1,22 @@
 import { Habit } from "../types/habit";
-import { mockHabitsService } from "../services/mockHabitsService";
-import { useHabitsStore } from "../store/habitsStore";
+import { useAppStore } from "../store";
+import { habitsServiceImpl } from "../services/habits/habitsServiceImpl";
+import { HabitsService } from "../services/habits/types";
+
+const habitsService: HabitsService = habitsServiceImpl;
+const LOG_PREFIX = "[habitsLogic] ";
 
 export const habitsLogic = {
-  getHobbies: async (): Promise<Habit[]> => {
-    const { setHabits } = useHabitsStore.getState();
+  fetchHabits: async (): Promise<Habit[]> => {
+    const { setHabits } = useAppStore.getState();
     try {
       // API:
-      const response = await mockHabitsService.getHabits();
+      const response = await habitsService.getHabits();
+
+      console.log(
+        "😎🔥 ~ file: habitsLogic.ts:17 ~ fetchHabits: ~ response:",
+        JSON.stringify(response.habits)
+      );
 
       // store:
       setHabits(response.habits);
@@ -16,50 +25,42 @@ export const habitsLogic = {
 
       return response.habits;
     } catch (error) {
-      console.error("Error fetching hobbies:", error);
+      console.error(LOG_PREFIX + "Error fetching habits:", error);
       throw error;
     }
   },
 
-  createHabit: async (name: string): Promise<void> => {
-    const { addHabit } = useHabitsStore.getState();
+  createHabit: async (name: string): Promise<Habit> => {
     try {
       // API:
-      const response = await mockHabitsService.createHabit(name);
+      const response = await habitsService.createHabit(name);
 
-      // store:
-      addHabit(response);
-
-      // TODO: Persist?
+      return response;
     } catch (error) {
-      console.error("Error creating hobby:", error);
+      console.error(LOG_PREFIX + "Error creating hobby:", error);
       throw error;
     }
   },
 
   updateHabit: async (updatedHabit: Habit): Promise<Habit> => {
-    const { updateHabit } = useHabitsStore.getState();
     try {
       // API:
-      const response = await mockHabitsService.updateHabit(updatedHabit);
+      const response = await habitsService.updateHabit(updatedHabit);
 
-      // store:
-      updateHabit(response);
-
-      // TODO: Persist?
       return response;
     } catch (error) {
-      console.error("Error updating habit:", error);
+      console.error(LOG_PREFIX + "Error updating habit:", error);
       throw error;
     }
   },
 
-  toggleHabit: async (id: string): Promise<void> => {
-    const { updateHabit, habits } = useHabitsStore.getState();
+  toggleHabit: async (id: string): Promise<Habit> => {
+    const { habits } = useAppStore.getState();
 
     try {
-      const habit = habits.find((habit) => habit.id === id);
-
+      const habit = habits.find((habit) => {
+        return habit.id === id;
+      });
       if (!habit) {
         throw new Error(`Habit with id ${id} not found`);
       }
@@ -70,25 +71,21 @@ export const habitsLogic = {
       };
 
       // API:
-      await mockHabitsService.updateHabit(updatedHabit);
+      const res = await habitsService.updateHabit(updatedHabit);
 
-      // store:
-      updateHabit(updatedHabit);
-
-      // TODO: Persist?
+      return res;
     } catch (error) {
-      console.error("Error toggling habit", error);
+      console.error(LOG_PREFIX + "Error toggling habit", error);
       throw error;
     }
   },
 
   deleteHabit: async (id: string): Promise<void> => {
     try {
-      await mockHabitsService.deleteHabit(id);
-
-      // TODO: Persist?
+      // API:
+      await habitsService.deleteHabit(id);
     } catch (error) {
-      console.error("Error deleting habit", error);
+      console.error(LOG_PREFIX + "Error deleting habit", error);
       throw error;
     }
   },

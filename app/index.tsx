@@ -1,12 +1,11 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import DailyHabits from "@/src/screens/DailyHabits";
+import React from "react";
 
-const queryClient = new QueryClient();
+import { LoginScreen } from "@/src/screens/LoginScreen";
+import { useAppStore } from "@/src/store";
+import DailyHabits from "./DailyHabits";
 
-export default function Index() {
-  return (
-    <QueryClientProvider client={queryClient}>
-      <DailyHabits />
-    </QueryClientProvider>
-  );
+export default function Home() {
+  const { isAuthenticated } = useAppStore();
+
+  return isAuthenticated ? <DailyHabits /> : <LoginScreen />;
 }

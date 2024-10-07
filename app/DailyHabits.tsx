@@ -8,27 +8,26 @@ import {
 } from "react-native";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Ionicons } from "@expo/vector-icons";
-
-import { useHabitsStore } from "../store/habitsStore";
-import { habitsLogic } from "../logic/habitsLogic";
-import { Habit } from "../types/habit";
+import { useAppStore } from "@/src/store";
+import { habitsLogic } from "@/src/logic/habitsLogic";
+import { Habit } from "@/src/types/habit";
 
 const QUERY_KEY = "habits";
 
 const DailyHabits = () => {
-  const { habits } = useHabitsStore();
+  const { habits } = useAppStore();
   const queryClient = useQueryClient();
 
   const { isLoading, isError, error } = useQuery({
     queryKey: [QUERY_KEY],
-    queryFn: habitsLogic.getHobbies,
+    queryFn: habitsLogic.fetchHabits,
   });
 
   const toggleHabit = async (habit: Habit) => {
     try {
       await habitsLogic.toggleHabit(habit.id);
       // Invalidate and refetch habits after toggling
-      //queryClient.invalidateQueries({ queryKey: [QUERY_KEY] });
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEY] });
     } catch (error) {
       console.error("Error toggling habit:", error);
     }
@@ -64,6 +63,7 @@ const DailyHabits = () => {
   return (
     <View style={styles.container}>
       <FlatList
+        contentContainerStyle={styles.list}
         data={habits}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
@@ -75,6 +75,10 @@ const DailyHabits = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  list: {
+    marginHorizontal: 8,
+    marginVertical: 16,
   },
   item: {
     flexDirection: "row",
