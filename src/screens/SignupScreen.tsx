@@ -42,6 +42,11 @@ export const SignupScreen = () => {
         secureTextEntry
       />
       <Button title="Sign Up" onPress={handleSignup} />
+      <Button
+        title="Already have an account? Login"
+        color={"#000"}
+        onPress={() => router.replace("/login")}
+      />
     </View>
   );
 };

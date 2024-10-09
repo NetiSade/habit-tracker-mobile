@@ -18,9 +18,12 @@ export const habitsServiceImpl: HabitsService = {
   },
 
   createHabit: async (name: string): Promise<Habit> => {
+    const { userId } = useAppStore.getState();
+
     try {
       const response = await apiClient.post("/habits", {
         name,
+        userId,
       });
       return response.data;
     } catch (error) {

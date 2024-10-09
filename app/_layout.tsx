@@ -26,6 +26,12 @@ export default function RootLayout() {
             title: "Home",
           }}
         />
+        <Stack.Screen
+          name="login"
+          options={{
+            title: "Login",
+          }}
+        />
       </Stack>
     </QueryClientProvider>
   );

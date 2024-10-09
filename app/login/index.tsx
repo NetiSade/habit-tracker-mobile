@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, TextInput, Button, StyleSheet, Alert } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { authLogic } from "../logic/authLogic";
+import { authLogic } from "../../src/logic/authLogic";
 import { useRouter } from "expo-router";
 
 export const LoginScreen = () => {
