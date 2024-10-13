@@ -1,27 +1,25 @@
 import { Habit } from "../types/habit";
 import { useAppStore } from "../store";
-import { habitsServiceImpl } from "../services/habits/habitsServiceImpl";
-import { HabitsService } from "../services/habits/types";
+import { habitsService } from "../services/habits/habitsService";
+import { getClientDate } from "../utils.ts/date";
 
-const habitsService: HabitsService = habitsServiceImpl;
 const LOG_PREFIX = "[habitsLogic] ";
 
 export const habitsLogic = {
   fetchHabits: async (): Promise<Habit[]> => {
-    const { setHabits } = useAppStore.getState();
     try {
-      // API:
-      const response = await habitsService.getHabits();
+      const { userId, setHabits } = useAppStore.getState();
+      const clientDate = getClientDate();
 
-      console.log(
-        "😎🔥 ~ file: habitsLogic.ts:17 ~ fetchHabits: ~ response:",
-        JSON.stringify(response.habits)
-      );
+      if (!userId) {
+        throw new Error("User not found");
+      }
+
+      // API:
+      const response = await habitsService.getDailyHabits(userId, clientDate);
 
       // store:
       setHabits(response.habits);
-
-      // TODO: Persist?
 
       return response.habits;
     } catch (error) {
@@ -30,10 +28,16 @@ export const habitsLogic = {
     }
   },
 
-  createHabit: async (name: string): Promise<Habit> => {
+  createHabit: async (name: string): Promise<string> => {
     try {
+      const { userId } = useAppStore.getState();
+
+      if (!userId) {
+        throw new Error("User not found");
+      }
+
       // API:
-      const response = await habitsService.createHabit(name);
+      const response = await habitsService.createHabit(userId, name);
 
       return response;
     } catch (error) {
@@ -42,36 +46,22 @@ export const habitsLogic = {
     }
   },
 
-  updateHabit: async (updatedHabit: Habit): Promise<Habit> => {
+  toggleHabit: async (id: string, isDone: boolean): Promise<string> => {
     try {
-      // API:
-      const response = await habitsService.updateHabit(updatedHabit);
+      const { userId } = useAppStore.getState();
+      const clientDate = getClientDate();
 
-      return response;
-    } catch (error) {
-      console.error(LOG_PREFIX + "Error updating habit:", error);
-      throw error;
-    }
-  },
-
-  toggleHabit: async (id: string): Promise<Habit> => {
-    const { habits } = useAppStore.getState();
-
-    try {
-      const habit = habits.find((habit) => {
-        return habit.id === id;
-      });
-      if (!habit) {
-        throw new Error(`Habit with id ${id} not found`);
+      if (!userId) {
+        throw new Error("User not found");
       }
 
-      const updatedHabit = {
-        ...habit,
-        completed: !habit.completed,
-      };
-
       // API:
-      const res = await habitsService.updateHabit(updatedHabit);
+      const res = await habitsService.toggleHabit(
+        userId,
+        id,
+        isDone,
+        clientDate
+      );
 
       return res;
     } catch (error) {
@@ -80,10 +70,12 @@ export const habitsLogic = {
     }
   },
 
-  deleteHabit: async (id: string): Promise<void> => {
+  deleteHabit: async (id: string): Promise<string> => {
     try {
       // API:
-      await habitsService.deleteHabit(id);
+      const res = await habitsService.deleteHabit(id);
+
+      return res;
     } catch (error) {
       console.error(LOG_PREFIX + "Error deleting habit", error);
       throw error;

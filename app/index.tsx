@@ -1,11 +1,14 @@
 import React from "react";
 
 import { useAppStore } from "@/src/store";
-import DailyHabits from "./DailyHabits";
+import DailyHabitsScreen from "../src/screens/dailyHabits/DailyHabits";
 import { SignupScreen } from "@/src/screens/SignupScreen";
+import { LoginScreen } from "./login";
 
 export default function Home() {
   const { isAuthenticated } = useAppStore();
 
-  return isAuthenticated ? <DailyHabits /> : <SignupScreen />;
+  //return <LoginScreen />;
+
+  return isAuthenticated ? <DailyHabitsScreen /> : <SignupScreen />;
 }
