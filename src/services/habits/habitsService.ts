@@ -15,11 +15,6 @@ export const habitsService = {
         },
       });
 
-      console.log(
-        "😎🔥 ~ file: habitsService.ts:15 ~ response:",
-        response.data
-      );
-
       return response.data;
     } catch (error) {
       console.error(LOG_PREFIX + "Error fetching habits:", error);
@@ -53,11 +48,6 @@ export const habitsService = {
           isDone,
           date,
         }
-      );
-
-      console.log(
-        "😎🔥 ~ file: habitsService.ts:53 ~ response:",
-        response.data
       );
 
       return response.data;

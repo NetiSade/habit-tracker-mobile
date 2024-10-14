@@ -1,7 +1,6 @@
 export interface AuthState {
-  token: string | null;
-  userId: string | null;
   isAuthenticated: boolean;
-  onLogin: (token: string, userId: string) => void;
+  userId: string | null;
+  onLoginSuccess: (userId: string) => void;
   onLogout: () => void;
 }

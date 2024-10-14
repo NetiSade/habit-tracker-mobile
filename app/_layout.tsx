@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Text } from "react-native";
-import { Slot, Stack } from "expo-router";
+import { Stack } from "expo-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { authLogic } from "@/src/logic/authLogic";
 

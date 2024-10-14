@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { View, TextInput, Button, StyleSheet, Alert } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { authLogic } from "../../src/logic/authLogic";
+import { authLogic } from "../src/logic/authLogic";
 import { useRouter } from "expo-router";
 
-export const LoginScreen = () => {
+const LoginScreen = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
@@ -55,3 +55,5 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
 });
+
+export default LoginScreen;
