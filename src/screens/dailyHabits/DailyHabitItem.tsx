@@ -21,7 +21,6 @@ export const DailyHabitItem = ({ item, onToggle }: DailyHabitItemProps) => {
       <Text
         style={[styles.habitText, item.isCompleted && styles.completedHabit]}
       >
-        {item.isCompleted ? "🎉 " : ""}
         {item.name}
       </Text>
     </TouchableOpacity>

@@ -1,17 +1,24 @@
 import { authService } from "../services/auth/authService";
+import { persistService } from "../services/perssist/perssistService";
 import { useAppStore } from "../store";
 
 export const authLogic = {
   init: async () => {
     try {
+      const userId = await persistService.getUserId();
+
+      if (userId) {
+        // user was logged in before
+        useAppStore.getState().setUserId(userId);
+      }
+
       const res = await authService.silentLogin();
 
       if (res && res.userId) {
         useAppStore.getState().onLoginSuccess(res.userId);
       }
     } catch (error) {
-      console.error("Silent login failed:", error);
-      useAppStore.getState().onLogout();
+      useAppStore.getState().onLoginFailure();
     }
   },
 
@@ -38,7 +45,6 @@ export const authLogic = {
   },
 
   logout: async () => {
-    // THINK: do we need to call the API to logout?
     await authService.logout();
     useAppStore.getState().onLogout();
   },

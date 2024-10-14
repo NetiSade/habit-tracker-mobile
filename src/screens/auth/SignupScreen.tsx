@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { View, TextInput, Button, StyleSheet, Alert } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import { authLogic } from "../logic/authLogic";
 import { useRouter } from "expo-router";
+
+import { authLogic } from "../../logic/authLogic";
 
 export const SignupScreen = () => {
   const [username, setUsername] = useState("");

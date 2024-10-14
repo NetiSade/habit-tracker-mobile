@@ -32,6 +32,12 @@ export default function RootLayout() {
             title: "Login",
           }}
         />
+        <Stack.Screen
+          name="signup"
+          options={{
+            title: "Signup",
+          }}
+        />
       </Stack>
     </QueryClientProvider>
   );

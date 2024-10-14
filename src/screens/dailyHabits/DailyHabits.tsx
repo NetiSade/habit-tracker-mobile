@@ -76,7 +76,14 @@ const DailyHabitsScreen = () => {
     <Text>{error instanceof Error ? error.message : "An error occurred"}</Text>
   );
 
-  const renderEmptyState = () => <Text>No habits found</Text>;
+  const renderEmptyState = () => (
+    <View style={styles.emptyStateContainer}>
+      <Text style={styles.emptyStateText}>No habits yet!</Text>
+      <Text style={styles.emptyStateText}>
+        🚀 Add a habit to get started 🚀
+      </Text>
+    </View>
+  );
 
   // Component
 
@@ -134,6 +141,15 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     backgroundColor: "#4A90E2",
     alignSelf: "center",
+  },
+  emptyStateContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  emptyStateText: {
+    fontSize: 16,
+    color: "#888",
   },
 });
 

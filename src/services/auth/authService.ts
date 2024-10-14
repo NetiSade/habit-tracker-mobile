@@ -1,6 +1,7 @@
 import axios from "axios";
 import { apiClient } from "../api_core/apiClient";
 import { tokenStorage } from "../perssist/tokenStorage";
+import { persistService } from "../perssist/perssistService";
 
 const LOG_PREFIX = "[AuthService]";
 
@@ -11,10 +12,11 @@ export const authService = {
       const { accessToken, refreshToken, user } = response.data;
 
       await tokenStorage.storeTokens({ accessToken, refreshToken });
+      await persistService.setUserId(user.id);
 
       return { success: true, userId: user.id };
     } catch (error) {
-      console.error("Login failed:", error);
+      console.error(LOG_PREFIX, "Login failed:", error);
       return {
         success: false,
         error,
@@ -33,6 +35,7 @@ export const authService = {
       const { accessToken, refreshToken, user } = response.data;
 
       await tokenStorage.storeTokens({ accessToken, refreshToken });
+      await persistService.setUserId(user.id);
 
       return { success: true, userId: user.id };
     } catch (error) {
@@ -56,6 +59,8 @@ export const authService = {
 
       try {
         const response = await apiClient.get("/verify-token");
+        await persistService.setUserId(response.data.userId);
+
         return { success: response.data.isValid, userId: response.data.userId };
       } catch (error) {
         if (axios.isAxiosError(error)) {
@@ -71,7 +76,7 @@ export const authService = {
               });
               return { success: true, userId: refreshResponse.data.userId };
             } catch (refreshError) {
-              console.error("Token refresh failed:", refreshError);
+              console.error(LOG_PREFIX, "Token refresh failed:", refreshError);
               await tokenStorage.clearTokens();
               return { success: false, userId: null };
             }
@@ -80,7 +85,7 @@ export const authService = {
         throw error; // Re-throw if it's not a 401 error
       }
     } catch (error) {
-      console.error("Silent login failed:", error);
+      console.error(LOG_PREFIX, "Silent login failed:", error);
       await tokenStorage.clearTokens();
       return false;
     }
@@ -88,5 +93,6 @@ export const authService = {
 
   logout: async () => {
     await tokenStorage.clearTokens();
+    await persistService.removeUserId();
   },
 };
