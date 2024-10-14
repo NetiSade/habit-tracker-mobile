@@ -44,6 +44,7 @@ export const AddHabitModal: React.FC<AddHabitModalProps> = ({
             style={styles.input}
             value={habitName}
             onChangeText={setHabitName}
+            autoFocus
             placeholder="Enter habit name"
           />
           <View style={styles.buttonContainer}>
