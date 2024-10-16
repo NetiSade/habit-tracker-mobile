@@ -42,11 +42,6 @@ const LoginScreen = () => {
         color={"#000"}
         onPress={() => router.replace("/signup")}
       />
-      <Button
-        title="Logout"
-        color={"#404040"}
-        onPress={() => authLogic.logout()}
-      />
     </View>
   );
 };

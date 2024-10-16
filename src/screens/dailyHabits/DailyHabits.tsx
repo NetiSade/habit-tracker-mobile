@@ -1,13 +1,5 @@
-import React, { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  TouchableOpacity,
-  RefreshControl,
-} from "react-native";
-import Ionicons from "@expo/vector-icons/Ionicons";
+import React, { useLayoutEffect, useState } from "react";
+import { View, Text, StyleSheet, FlatList, RefreshControl } from "react-native";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { useAppStore } from "@/src/store";
@@ -16,6 +8,10 @@ import { Habit } from "@/src/types/habit";
 import { AddHabitModal } from "@/src/components/modals/AddHabitModal";
 import DailyHabitItem from "./DailyHabitItem";
 import { formatDate } from "./utils";
+import OptionsMenu from "./components/OptionsMenu";
+import { useNavigation } from "expo-router";
+import { authLogic } from "@/src/logic/authLogic";
+import { FAB } from "react-native-paper";
 
 const QUERY_KEY = "habits";
 
@@ -26,6 +22,8 @@ const DailyHabitsScreen = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const clientDate = new Date();
   const formattedDate = formatDate(clientDate);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const navigation = useNavigation();
 
   // Queries
   const { isLoading, isError, error } = useQuery({
@@ -62,6 +60,18 @@ const DailyHabitsScreen = () => {
     queryClient.invalidateQueries({ queryKey: [QUERY_KEY] });
   };
 
+  const handleEditPress = () => {
+    setIsEditMode(true);
+  };
+
+  const handleLogoutPress = async () => {
+    try {
+      await authLogic.logout();
+    } catch (error) {
+      console.error("Error logging out:", error);
+    }
+  };
+
   // Render methods
 
   const renderItem = ({ item }: { item: Habit }) => (
@@ -85,6 +95,18 @@ const DailyHabitsScreen = () => {
     </View>
   );
 
+  // add the OptionsMenu to the navigation bar
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <OptionsMenu
+          onEditPress={handleEditPress}
+          onLogoutPress={handleLogoutPress}
+        />
+      ),
+    });
+  }, [navigation]);
+
   // Component
 
   return (
@@ -103,12 +125,12 @@ const DailyHabitsScreen = () => {
           ListEmptyComponent={renderEmptyState()}
         />
       )}
-      <TouchableOpacity
-        style={styles.addButton}
+      <FAB
+        icon="plus"
+        label="Add Habit"
         onPress={() => setIsModalVisible(true)}
-      >
-        <Ionicons name="add" size={24} color="white" fontWeight="bold" />
-      </TouchableOpacity>
+        style={styles.addButton}
+      />
       <AddHabitModal
         visible={isModalVisible}
         onClose={handleModalClose}
@@ -136,11 +158,9 @@ const styles = StyleSheet.create({
   },
   addButton: {
     position: "absolute",
-    padding: 10,
-    bottom: 20,
-    borderRadius: 50,
-    backgroundColor: "#4A90E2",
-    alignSelf: "center",
+    margin: 16,
+    right: 0,
+    bottom: 0,
   },
   emptyStateContainer: {
     flex: 1,
