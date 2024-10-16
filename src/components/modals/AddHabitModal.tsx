@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import { Habit } from "@/src/types/habit";
+import React, { useEffect, useState } from "react";
 import {
   Modal,
   View,
@@ -12,20 +13,31 @@ import {
 interface AddHabitModalProps {
   visible: boolean;
   onClose: () => void;
-  onAdd: (habitName: string) => void;
+  onAddSubmitted: (habitName: string) => void;
+  onEditSubmitted: (habitId: string, newHabitName: string) => void;
+  itemToEdit: Habit | null;
 }
 
 export const AddHabitModal: React.FC<AddHabitModalProps> = ({
   visible,
+  itemToEdit,
   onClose,
-  onAdd,
+  onAddSubmitted,
+  onEditSubmitted,
 }) => {
   const [habitName, setHabitName] = useState("");
 
-  const handleAdd = () => {
+  useEffect(() => {
+    setHabitName(itemToEdit?.name ?? "");
+  }, [itemToEdit]);
+
+  const handleAddOrUpdate = () => {
     if (habitName.trim()) {
-      onAdd(habitName.trim());
-      setHabitName("");
+      if (itemToEdit) {
+        onEditSubmitted(itemToEdit.id, habitName.trim());
+      } else {
+        onAddSubmitted(habitName.trim());
+      }
       onClose();
     }
   };
@@ -36,13 +48,18 @@ export const AddHabitModal: React.FC<AddHabitModalProps> = ({
       transparent={true}
       visible={visible}
       onRequestClose={onClose}
+      onDismiss={() => {
+        setHabitName("");
+      }}
     >
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
-          <Text style={styles.modalText}>Add New Habit</Text>
+          <Text style={styles.modalText}>
+            {itemToEdit ? "Edit Habit" : "Add New Habit"}
+          </Text>
           <TextInput
-            style={styles.input}
             value={habitName}
+            style={styles.input}
             onChangeText={setHabitName}
             autoFocus
             placeholder="Enter habit name"
@@ -56,9 +73,11 @@ export const AddHabitModal: React.FC<AddHabitModalProps> = ({
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.button, styles.buttonAdd]}
-              onPress={handleAdd}
+              onPress={handleAddOrUpdate}
             >
-              <Text style={styles.textStyle}>Add</Text>
+              <Text style={styles.textStyle}>
+                {itemToEdit ? "Update" : "Add"}
+              </Text>
             </TouchableOpacity>
           </View>
         </View>

@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useState } from "react";
+import React, { useLayoutEffect, useRef, useState } from "react";
 import { View, Text, StyleSheet, FlatList, RefreshControl } from "react-native";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
@@ -19,11 +19,19 @@ const DailyHabitsScreen = () => {
   // States
   const { habits } = useAppStore();
   const queryClient = useQueryClient();
-  const [isModalVisible, setIsModalVisible] = useState(false);
   const clientDate = new Date();
   const formattedDate = formatDate(clientDate);
-  const [isEditMode, setIsEditMode] = useState(false);
   const navigation = useNavigation();
+
+  const [isEditMode, setIsEditMode] = useState(false);
+
+  const [modalState, setModalState] = useState<{
+    isVisible: boolean;
+    itemToEdit: Habit | null;
+  }>({
+    isVisible: false,
+    itemToEdit: null,
+  });
 
   // Queries
   const { isLoading, isError, error } = useQuery({
@@ -52,16 +60,31 @@ const DailyHabitsScreen = () => {
     }
   };
 
+  const handleEditHabitSubmit = async (
+    habitId: string,
+    newHabitName: string
+  ) => {
+    try {
+      await habitsLogic.updateHabit(habitId, newHabitName);
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEY] });
+    } catch (error) {
+      console.error("Error updating habit:", error);
+    }
+  };
+
   const handleModalClose = () => {
-    setIsModalVisible(false);
+    setModalState({
+      isVisible: false,
+      itemToEdit: null,
+    });
   };
 
   const onRefresh = () => {
     queryClient.invalidateQueries({ queryKey: [QUERY_KEY] });
   };
 
-  const handleEditPress = () => {
-    setIsEditMode(true);
+  const toggleEditMode = () => {
+    setIsEditMode(!isEditMode);
   };
 
   const handleLogoutPress = async () => {
@@ -75,7 +98,22 @@ const DailyHabitsScreen = () => {
   // Render methods
 
   const renderItem = ({ item }: { item: Habit }) => (
-    <DailyHabitItem item={item} onToggle={() => toggleHabit(item)} />
+    <DailyHabitItem
+      item={item}
+      onToggle={() => toggleHabit(item)}
+      isEditMode={isEditMode}
+      onEditPress={() => {
+        setModalState({
+          isVisible: true,
+          itemToEdit: item,
+        });
+      }}
+      onDeletePress={() => {
+        // TODO: Are you sure you want to delete this habit?
+        habitsLogic.deleteHabit(item.id);
+        queryClient.invalidateQueries({ queryKey: [QUERY_KEY] });
+      }}
+    />
   );
 
   const renderRefreshControl = () => (
@@ -95,20 +133,19 @@ const DailyHabitsScreen = () => {
     </View>
   );
 
-  // add the OptionsMenu to the navigation bar
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
         <OptionsMenu
-          onEditPress={handleEditPress}
+          isEditMode={isEditMode}
+          toggleEditMode={toggleEditMode}
           onLogoutPress={handleLogoutPress}
         />
       ),
     });
-  }, [navigation]);
+  }, [navigation, isEditMode, toggleEditMode, handleLogoutPress]);
 
-  // Component
-
+  // Screen
   return (
     <View style={styles.container}>
       <Text style={styles.dateHeader}>{formattedDate}</Text>
@@ -125,16 +162,25 @@ const DailyHabitsScreen = () => {
           ListEmptyComponent={renderEmptyState()}
         />
       )}
-      <FAB
-        icon="plus"
-        label="Add Habit"
-        onPress={() => setIsModalVisible(true)}
-        style={styles.addButton}
-      />
+      {isEditMode && (
+        <FAB
+          icon="plus"
+          label="Add Habit"
+          onPress={() => {
+            setModalState({
+              isVisible: true,
+              itemToEdit: null,
+            });
+          }}
+          style={styles.addButton}
+        />
+      )}
       <AddHabitModal
-        visible={isModalVisible}
+        visible={modalState.isVisible}
+        itemToEdit={modalState.itemToEdit}
         onClose={handleModalClose}
-        onAdd={handleAddHabit}
+        onAddSubmitted={handleAddHabit}
+        onEditSubmitted={handleEditHabitSubmit}
       />
     </View>
   );

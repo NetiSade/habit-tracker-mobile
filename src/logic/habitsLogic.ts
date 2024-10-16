@@ -46,6 +46,24 @@ export const habitsLogic = {
     }
   },
 
+  updateHabit: async (habitId: string, newName: string): Promise<string> => {
+    try {
+      const { userId } = useAppStore.getState();
+
+      if (!userId) {
+        throw new Error("User not found");
+      }
+
+      // API:
+      const res = await habitsService.updateHabit(userId, habitId, newName);
+
+      return res;
+    } catch (error) {
+      console.error(LOG_PREFIX + "Error updating habit", error);
+      throw error;
+    }
+  },
+
   toggleHabit: async (id: string, isDone: boolean): Promise<string> => {
     try {
       const { userId } = useAppStore.getState();

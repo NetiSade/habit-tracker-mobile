@@ -35,6 +35,23 @@ export const habitsService = {
     }
   },
 
+  updateHabit: async (
+    userId: string,
+    habitId: string,
+    newName: string
+  ): Promise<string> => {
+    try {
+      const response = await apiClient.put(`/habits/${userId}/${habitId}`, {
+        name: newName,
+      });
+
+      return response.data;
+    } catch (error) {
+      console.error(LOG_PREFIX + "Error updating habit:", error);
+      throw error;
+    }
+  },
+
   toggleHabit: async (
     userId: string,
     habitId: string,
