@@ -1,7 +1,5 @@
-import { TouchableOpacity, View, StyleSheet, Text } from "react-native";
-import Ionicons from "@expo/vector-icons/Ionicons";
+import { View, StyleSheet } from "react-native";
 import { Card, Checkbox, IconButton, Title } from "react-native-paper";
-
 import { Habit } from "@/src/types/habit";
 
 interface DailyHabitItemProps {
@@ -33,10 +31,10 @@ export const DailyHabitItem = ({
       <Card.Content style={styles.cardContent}>
         {!isEditMode && (
           <Checkbox
-            status={item.isCompleted ? "checked" : "unchecked"}
             onPress={onToggle}
-            color="green" // Checked color
-            uncheckedColor="black" // Unchecked border color (set it to a contrasting color)
+            status={item.isCompleted ? "checked" : "unchecked"}
+            uncheckedColor="black"
+            color="green"
           />
         )}
         {isEditMode && (
@@ -80,15 +78,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
   },
-  checkbox: {
-    marginHorizontal: 16,
-  },
   habitText: {
     fontSize: 18,
-    fontWeight: "bold",
+    fontWeight: "500",
   },
   completedHabit: {
-    color: "gray",
+    fontWeight: "normal",
   },
   editActions: {
     flexDirection: "row",

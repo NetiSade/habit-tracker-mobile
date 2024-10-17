@@ -1,14 +1,7 @@
 import { Habit } from "@/src/types/habit";
 import React, { useEffect, useState } from "react";
-import {
-  Modal,
-  View,
-  TextInput,
-  Button,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-} from "react-native";
+import { Modal, View, StyleSheet, Text } from "react-native";
+import { Button, Card, TextInput } from "react-native-paper";
 
 interface AddHabitModalProps {
   visible: boolean;
@@ -53,7 +46,7 @@ export const AddHabitModal: React.FC<AddHabitModalProps> = ({
       }}
     >
       <View style={styles.centeredView}>
-        <View style={styles.modalView}>
+        <Card style={styles.modalView}>
           <Text style={styles.modalText}>
             {itemToEdit ? "Edit Habit" : "Add New Habit"}
           </Text>
@@ -65,22 +58,18 @@ export const AddHabitModal: React.FC<AddHabitModalProps> = ({
             placeholder="Enter habit name"
           />
           <View style={styles.buttonContainer}>
-            <TouchableOpacity
-              style={[styles.button, styles.buttonCancel]}
-              onPress={onClose}
-            >
-              <Text style={styles.textStyle}>Cancel</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.button, styles.buttonAdd]}
+            <Button
               onPress={handleAddOrUpdate}
+              mode="contained"
+              disabled={!habitName.trim()}
             >
-              <Text style={styles.textStyle}>
-                {itemToEdit ? "Update" : "Add"}
-              </Text>
-            </TouchableOpacity>
+              {itemToEdit ? "Update" : "Add"}
+            </Button>
+            <Button onPress={onClose} mode="text">
+              Cancel
+            </Button>
           </View>
-        </View>
+        </Card>
       </View>
     </Modal>
   );
@@ -94,44 +83,16 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
   modalView: {
-    margin: 20,
-    backgroundColor: "white",
-    borderRadius: 20,
-    padding: 35,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
+    padding: 16,
   },
   input: {
-    height: 40,
     width: 200,
-    margin: 12,
+    marginHorizontal: 8,
+    marginVertical: 16,
     borderWidth: 1,
-    padding: 10,
-    borderRadius: 5,
   },
   buttonContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: "100%",
-  },
-  button: {
-    borderRadius: 20,
-    padding: 10,
-    elevation: 2,
-    marginHorizontal: 10,
-  },
-  buttonCancel: {
-    backgroundColor: "#2196F3",
-  },
-  buttonAdd: {
-    backgroundColor: "#4CAF50",
+    marginTop: 8,
   },
   textStyle: {
     color: "white",
@@ -139,7 +100,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   modalText: {
-    marginBottom: 15,
     textAlign: "center",
     fontWeight: "bold",
     fontSize: 18,

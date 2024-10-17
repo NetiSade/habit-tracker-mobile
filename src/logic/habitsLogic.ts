@@ -2,6 +2,7 @@ import { Habit } from "../types/habit";
 import { useAppStore } from "../store";
 import { habitsService } from "../services/habits/habitsService";
 import { getClientDate } from "../utils.ts/date";
+import { UpdatedHabit } from "../services/habits/types";
 
 const LOG_PREFIX = "[habitsLogic] ";
 
@@ -46,7 +47,7 @@ export const habitsLogic = {
     }
   },
 
-  updateHabit: async (habitId: string, newName: string): Promise<string> => {
+  updateHabits: async (updatedHabits: UpdatedHabit[]): Promise<string> => {
     try {
       const { userId } = useAppStore.getState();
 
@@ -55,7 +56,7 @@ export const habitsLogic = {
       }
 
       // API:
-      const res = await habitsService.updateHabit(userId, habitId, newName);
+      const res = await habitsService.updateHabits(userId, updatedHabits);
 
       return res;
     } catch (error) {

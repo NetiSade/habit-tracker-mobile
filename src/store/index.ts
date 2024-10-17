@@ -20,4 +20,8 @@ export const useAppStore = create<AppState>((set) => ({
   // Habit state
   habits: [],
   setHabits: (habits) => set({ habits }),
+  updateHabit: (habit) =>
+    set((state) => ({
+      habits: state.habits.map((h) => (h.id === habit.id ? habit : h)),
+    })),
 }));

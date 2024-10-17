@@ -1,5 +1,6 @@
+import { Habit } from "@/src/types/habit";
 import { apiClient } from "../api_core/apiClient";
-import { GetHabitsResponse } from "./types";
+import { GetHabitsResponse, UpdatedHabit } from "./types";
 
 const LOG_PREFIX = "[habitsServiceImpl] ";
 
@@ -35,19 +36,18 @@ export const habitsService = {
     }
   },
 
-  updateHabit: async (
+  updateHabits: async (
     userId: string,
-    habitId: string,
-    newName: string
+    updatedHabits: UpdatedHabit[]
   ): Promise<string> => {
     try {
-      const response = await apiClient.put(`/habits/${userId}/${habitId}`, {
-        name: newName,
+      const response = await apiClient.put(`/habits/${userId}`, {
+        habits: updatedHabits,
       });
 
       return response.data;
     } catch (error) {
-      console.error(LOG_PREFIX + "Error updating habit:", error);
+      console.error(LOG_PREFIX + "Error updating habits:", error);
       throw error;
     }
   },

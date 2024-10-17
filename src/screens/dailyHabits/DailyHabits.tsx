@@ -1,145 +1,42 @@
-import React, { useLayoutEffect, useRef, useState } from "react";
-import { View, Text, StyleSheet, FlatList, RefreshControl } from "react-native";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-
-import { useAppStore } from "@/src/store";
-import { habitsLogic } from "@/src/logic/habitsLogic";
-import { Habit } from "@/src/types/habit";
-import { AddHabitModal } from "@/src/components/modals/AddHabitModal";
-import DailyHabitItem from "./DailyHabitItem";
-import { formatDate } from "./utils";
-import OptionsMenu from "./components/OptionsMenu";
+import React, { useLayoutEffect } from "react";
+import { View, Text, StyleSheet, RefreshControl } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "expo-router";
-import { authLogic } from "@/src/logic/authLogic";
 import { FAB } from "react-native-paper";
 import DraggableFlatList, {
   RenderItemParams,
 } from "react-native-draggable-flatlist";
 
-const QUERY_KEY = "habits";
+import { Habit } from "@/src/types/habit";
+import { AddHabitModal } from "@/src/components/modals/AddHabitModal";
+import DailyHabitItem from "./components/DailyHabitItem";
+import OptionsMenu from "./components/OptionsMenu";
+import ListHeader from "./components/ListHeader";
+import EmptyState from "./components/EmptyState";
+import { useDailyHabits } from "./useDailyHabits";
+import ErrorState from "./components/ErrorState";
 
 const DailyHabitsScreen = () => {
-  // States
-  const { habits } = useAppStore();
-  const queryClient = useQueryClient();
+  const {
+    apiState,
+    habits,
+    modalState,
+    isEditMode,
+    completedHabitsCount,
+    onRefresh,
+    toggleHabit,
+    handleAddHabit,
+    handleEditHabitSubmit,
+    handleEditHabitPress,
+    handleCreateHabitPress,
+    handleDeleteHabit,
+    handleOnDragEnd,
+    handleModalClose,
+    handleLogoutPress,
+    toggleEditMode,
+  } = useDailyHabits();
+
   const navigation = useNavigation();
-
-  const clientDate = new Date();
-  const formattedDate = formatDate(clientDate);
-
-  const [isEditMode, setIsEditMode] = useState(false);
-
-  const [modalState, setModalState] = useState<{
-    isVisible: boolean;
-    itemToEdit: Habit | null;
-  }>({
-    isVisible: false,
-    itemToEdit: null,
-  });
-
-  const isAllHabitsCompleted = habits.every((habit) => habit.isCompleted);
-
-  // Queries
-  const { isLoading, isError, error } = useQuery({
-    queryKey: [QUERY_KEY],
-    queryFn: habitsLogic.fetchHabits,
-  });
-
-  // Handlers
-
-  const toggleHabit = async (habit: Habit) => {
-    try {
-      await habitsLogic.toggleHabit(habit.id, !habit.isCompleted);
-      // Invalidate and refetch habits after toggling
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEY] });
-    } catch (error) {
-      console.error("Error toggling habit:", error);
-    }
-  };
-
-  const handleAddHabit = async (habitName: string) => {
-    try {
-      await habitsLogic.createHabit(habitName);
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEY] });
-    } catch (error) {
-      console.error("Error creating habit:", error);
-    }
-  };
-
-  const handleEditHabitSubmit = async (
-    habitId: string,
-    newHabitName: string
-  ) => {
-    try {
-      await habitsLogic.updateHabit(habitId, newHabitName);
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEY] });
-    } catch (error) {
-      console.error("Error updating habit:", error);
-    }
-  };
-
-  const handleModalClose = () => {
-    setModalState({
-      isVisible: false,
-      itemToEdit: null,
-    });
-  };
-
-  const onRefresh = () => {
-    queryClient.invalidateQueries({ queryKey: [QUERY_KEY] });
-  };
-
-  const toggleEditMode = () => {
-    setIsEditMode(!isEditMode);
-  };
-
-  const handleLogoutPress = async () => {
-    try {
-      await authLogic.logout();
-    } catch (error) {
-      console.error("Error logging out:", error);
-    }
-  };
-
-  // Render methods
-
-  const renderItem = ({ item, drag, isActive }: RenderItemParams<Habit>) => (
-    <DailyHabitItem
-      item={item}
-      onToggle={() => toggleHabit(item)}
-      isEditMode={isEditMode}
-      onEditPress={() => {
-        setModalState({
-          isVisible: true,
-          itemToEdit: item,
-        });
-      }}
-      onDeletePress={() => {
-        // TODO: Are you sure you want to delete this habit?
-        habitsLogic.deleteHabit(item.id);
-        queryClient.invalidateQueries({ queryKey: [QUERY_KEY] });
-      }}
-      onReorderPress={isEditMode ? drag : undefined}
-      isReordering={isActive}
-    />
-  );
-
-  const renderRefreshControl = () => (
-    <RefreshControl refreshing={isLoading} onRefresh={onRefresh} />
-  );
-
-  const renderErrorState = () => (
-    <Text>{error instanceof Error ? error.message : "An error occurred"}</Text>
-  );
-
-  const renderEmptyState = () => (
-    <View style={styles.emptyStateContainer}>
-      <Text style={styles.emptyStateText}>No habits yet!</Text>
-      <Text style={styles.emptyStateText}>
-        🚀 Add a habit to get started 🚀
-      </Text>
-    </View>
-  );
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -153,46 +50,59 @@ const DailyHabitsScreen = () => {
     });
   }, [navigation, isEditMode, toggleEditMode, handleLogoutPress]);
 
-  // Screen
+  const renderItem = ({ item, drag, isActive }: RenderItemParams<Habit>) => (
+    <DailyHabitItem
+      item={item}
+      onToggle={() => toggleHabit(item)}
+      isEditMode={isEditMode}
+      onEditPress={() => {
+        handleEditHabitPress(item);
+      }}
+      onDeletePress={() => {
+        handleDeleteHabit(item.id);
+      }}
+      onReorderPress={isEditMode ? drag : undefined}
+      isReordering={isActive}
+    />
+  );
+
+  if (apiState.isError) {
+    return <ErrorState />;
+  }
+
   return (
     <View style={styles.container}>
-      <Text style={styles.dateHeader}>
-        {isAllHabitsCompleted ? `✅ ${formattedDate}` : formattedDate}
-      </Text>
-      {isError ? (
-        renderErrorState()
-      ) : (
+      <SafeAreaView style={styles.listContainer}>
         <DraggableFlatList
-          contentContainerStyle={styles.list}
+          ListHeaderComponent={
+            <ListHeader
+              completedHabitsCount={completedHabitsCount}
+              totalHabitsCount={habits.length}
+            />
+          }
+          ListHeaderComponentStyle={styles.listHeaderContainer}
           data={habits}
           renderItem={renderItem}
           keyExtractor={(item) => item.id}
-          refreshing={isLoading}
-          refreshControl={renderRefreshControl()}
-          ListEmptyComponent={renderEmptyState()}
-          onDragEnd={({ data }) => {
-            const updatedHabits = data.map((habit, index) => ({
-              id: habit.id,
-              priority: index + 1,
-            }));
-            console.log("updatedHabits", updatedHabits);
-          }}
+          refreshing={apiState.isLoading}
+          refreshControl={
+            <RefreshControl
+              refreshing={apiState.isLoading}
+              onRefresh={onRefresh}
+            />
+          }
+          ListEmptyComponent={<EmptyState />}
+          onDragEnd={handleOnDragEnd}
         />
-      )}
-      {isEditMode ||
-        (!isAllHabitsCompleted && (
-          <FAB
-            icon="plus"
-            label="Add Habit"
-            onPress={() => {
-              setModalState({
-                isVisible: true,
-                itemToEdit: null,
-              });
-            }}
-            style={styles.addButton}
-          />
-        ))}
+      </SafeAreaView>
+
+      <FAB
+        icon="plus"
+        label="Add Habit"
+        onPress={handleCreateHabitPress}
+        style={styles.addButton}
+      />
+
       <AddHabitModal
         visible={modalState.isVisible}
         itemToEdit={modalState.itemToEdit}
@@ -209,31 +119,20 @@ const DailyHabitsScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#E8E8E8",
   },
-  dateHeader: {
-    marginHorizontal: 8,
-    marginVertical: 16,
-    fontSize: 20,
-    fontWeight: "bold",
-    textAlign: "center",
+  listContainer: {
+    flex: 1,
+    marginBottom: 16,
   },
-  list: {
-    marginHorizontal: 8,
+  listHeaderContainer: {
+    marginBottom: 16,
   },
   addButton: {
     position: "absolute",
     margin: 16,
     right: 0,
     bottom: 0,
-  },
-  emptyStateContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  emptyStateText: {
-    fontSize: 16,
-    color: "#888",
   },
 });
 
