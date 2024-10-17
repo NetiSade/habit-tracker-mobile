@@ -6,7 +6,7 @@ const EmptyState = () => {
     <View style={styles.container}>
       <Title style={styles.emptyStateText}>No habits yet</Title>
       <Title style={styles.emptyStateText}>
-        🚀 Add a habits to get started 🚀
+        🚀 Add habits to get started 🚀
       </Title>
     </View>
   );

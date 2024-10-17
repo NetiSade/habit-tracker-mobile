@@ -98,7 +98,7 @@ const DailyHabitsScreen = () => {
 
       <FAB
         icon="plus"
-        label="Add Habit"
+        label="Add a daily habit"
         onPress={handleCreateHabitPress}
         style={styles.addButton}
       />
@@ -131,7 +131,6 @@ const styles = StyleSheet.create({
   addButton: {
     position: "absolute",
     margin: 16,
-    right: 0,
     bottom: 0,
   },
 });

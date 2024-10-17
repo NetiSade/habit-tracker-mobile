@@ -71,7 +71,7 @@ const ListHeader = ({
 
       {!isEmptyState && (
         <Title style={styles.subtitle}>
-          {`My habits for today (${completedHabitsCount} / ${totalHabitsCount}):`}
+          {`My Daily Habits (${completedHabitsCount} / ${totalHabitsCount})`}
         </Title>
       )}
     </View>
@@ -87,10 +87,10 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   subtitle: {
-    fontSize: 18,
+    fontSize: 16,
   },
   successMsg: {
-    fontSize: 18,
+    fontSize: 16,
     fontStyle: "italic",
   },
 });
