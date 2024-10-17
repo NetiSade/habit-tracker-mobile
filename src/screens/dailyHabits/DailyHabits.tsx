@@ -12,6 +12,9 @@ import OptionsMenu from "./components/OptionsMenu";
 import { useNavigation } from "expo-router";
 import { authLogic } from "@/src/logic/authLogic";
 import { FAB } from "react-native-paper";
+import DraggableFlatList, {
+  RenderItemParams,
+} from "react-native-draggable-flatlist";
 
 const QUERY_KEY = "habits";
 
@@ -19,9 +22,10 @@ const DailyHabitsScreen = () => {
   // States
   const { habits } = useAppStore();
   const queryClient = useQueryClient();
+  const navigation = useNavigation();
+
   const clientDate = new Date();
   const formattedDate = formatDate(clientDate);
-  const navigation = useNavigation();
 
   const [isEditMode, setIsEditMode] = useState(false);
 
@@ -32,6 +36,8 @@ const DailyHabitsScreen = () => {
     isVisible: false,
     itemToEdit: null,
   });
+
+  const isAllHabitsCompleted = habits.every((habit) => habit.isCompleted);
 
   // Queries
   const { isLoading, isError, error } = useQuery({
@@ -97,7 +103,7 @@ const DailyHabitsScreen = () => {
 
   // Render methods
 
-  const renderItem = ({ item }: { item: Habit }) => (
+  const renderItem = ({ item, drag, isActive }: RenderItemParams<Habit>) => (
     <DailyHabitItem
       item={item}
       onToggle={() => toggleHabit(item)}
@@ -113,6 +119,8 @@ const DailyHabitsScreen = () => {
         habitsLogic.deleteHabit(item.id);
         queryClient.invalidateQueries({ queryKey: [QUERY_KEY] });
       }}
+      onReorderPress={isEditMode ? drag : undefined}
+      isReordering={isActive}
     />
   );
 
@@ -148,11 +156,13 @@ const DailyHabitsScreen = () => {
   // Screen
   return (
     <View style={styles.container}>
-      <Text style={styles.dateHeader}>{formattedDate}</Text>
+      <Text style={styles.dateHeader}>
+        {isAllHabitsCompleted ? `✅ ${formattedDate}` : formattedDate}
+      </Text>
       {isError ? (
         renderErrorState()
       ) : (
-        <FlatList
+        <DraggableFlatList
           contentContainerStyle={styles.list}
           data={habits}
           renderItem={renderItem}
@@ -160,21 +170,29 @@ const DailyHabitsScreen = () => {
           refreshing={isLoading}
           refreshControl={renderRefreshControl()}
           ListEmptyComponent={renderEmptyState()}
-        />
-      )}
-      {isEditMode && (
-        <FAB
-          icon="plus"
-          label="Add Habit"
-          onPress={() => {
-            setModalState({
-              isVisible: true,
-              itemToEdit: null,
-            });
+          onDragEnd={({ data }) => {
+            const updatedHabits = data.map((habit, index) => ({
+              id: habit.id,
+              priority: index + 1,
+            }));
+            console.log("updatedHabits", updatedHabits);
           }}
-          style={styles.addButton}
         />
       )}
+      {isEditMode ||
+        (!isAllHabitsCompleted && (
+          <FAB
+            icon="plus"
+            label="Add Habit"
+            onPress={() => {
+              setModalState({
+                isVisible: true,
+                itemToEdit: null,
+              });
+            }}
+            style={styles.addButton}
+          />
+        ))}
       <AddHabitModal
         visible={modalState.isVisible}
         itemToEdit={modalState.itemToEdit}

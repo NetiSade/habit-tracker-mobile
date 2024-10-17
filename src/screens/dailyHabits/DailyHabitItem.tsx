@@ -1,8 +1,8 @@
 import { TouchableOpacity, View, StyleSheet, Text } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { Card, Checkbox, IconButton, Title } from "react-native-paper";
 
 import { Habit } from "@/src/types/habit";
-import { IconButton } from "react-native-paper";
 
 interface DailyHabitItemProps {
   item: Habit;
@@ -10,6 +10,9 @@ interface DailyHabitItemProps {
   onToggle: () => void;
   onEditPress: () => void;
   onDeletePress: () => void;
+  // reorder
+  onReorderPress: (() => void) | undefined;
+  isReordering: boolean;
 }
 
 export const DailyHabitItem = ({
@@ -18,54 +21,71 @@ export const DailyHabitItem = ({
   isEditMode,
   onEditPress,
   onDeletePress,
+  onReorderPress,
+  isReordering,
 }: DailyHabitItemProps) => {
   return (
-    <TouchableOpacity style={styles.item} onPress={onToggle}>
-      {!isEditMode && (
-        <View style={styles.checkbox}>
-          {item.isCompleted ? (
-            <Ionicons name="checkbox" size={24} color="green" />
-          ) : (
-            <Ionicons name="square-outline" size={24} color="black" />
-          )}
-        </View>
-      )}
-      <Text
-        style={[styles.habitText, item.isCompleted && styles.completedHabit]}
-      >
-        {item.name}
-      </Text>
-      {isEditMode && (
-        <View style={styles.editActions}>
-          <IconButton icon="pencil" size={20} onPress={onEditPress} />
-          <IconButton icon="delete" size={20} onPress={onDeletePress} />
-        </View>
-      )}
-    </TouchableOpacity>
+    <Card
+      style={[styles.card, { opacity: isReordering ? 0.7 : 1 }]}
+      onPress={isEditMode ? undefined : onToggle}
+      onLongPress={isEditMode ? onReorderPress : undefined}
+    >
+      <Card.Content style={styles.cardContent}>
+        {!isEditMode && (
+          <Checkbox
+            status={item.isCompleted ? "checked" : "unchecked"}
+            onPress={onToggle}
+            color="green" // Checked color
+            uncheckedColor="black" // Unchecked border color (set it to a contrasting color)
+          />
+        )}
+        {isEditMode && (
+          <IconButton icon="drag" size={24} onLongPress={onReorderPress} />
+        )}
+        <Title
+          style={[styles.habitText, item.isCompleted && styles.completedHabit]}
+        >
+          {item.name}
+        </Title>
+        {isEditMode && (
+          <View style={styles.editActions}>
+            <IconButton
+              icon="pencil"
+              onPress={onEditPress}
+              size={18}
+              mode="contained-tonal"
+            />
+            <IconButton
+              icon="delete"
+              onPress={onDeletePress}
+              size={18}
+              mode="contained-tonal"
+            />
+          </View>
+        )}
+      </Card.Content>
+    </Card>
   );
 };
 
 const styles = StyleSheet.create({
-  item: {
+  card: {
+    marginVertical: 8,
+    marginHorizontal: 16,
+    borderRadius: 10,
+    elevation: 2,
+  },
+  cardContent: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    marginVertical: 4,
-    backgroundColor: "white",
-    borderRadius: 8,
-    elevation: 2,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.22,
-    shadowRadius: 2.22,
   },
   checkbox: {
-    marginRight: 10,
+    marginHorizontal: 16,
   },
   habitText: {
-    fontSize: 16,
+    fontSize: 18,
+    fontWeight: "bold",
   },
   completedHabit: {
     color: "gray",
