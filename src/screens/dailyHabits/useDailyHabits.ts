@@ -86,6 +86,7 @@ export const useDailyHabits = () => {
 
   const handleLogoutPress = async () => {
     try {
+      // TODO: Are you sure you want to logout?
       await authLogic.logout();
     } catch (error) {
       console.error("Error logging out:", error);

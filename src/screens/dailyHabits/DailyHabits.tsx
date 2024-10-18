@@ -1,5 +1,5 @@
 import React, { useLayoutEffect } from "react";
-import { View, Text, StyleSheet, RefreshControl } from "react-native";
+import { View, StyleSheet, RefreshControl } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "expo-router";
 import { FAB } from "react-native-paper";
@@ -15,6 +15,7 @@ import ListHeader from "./components/ListHeader";
 import EmptyState from "./components/EmptyState";
 import { useDailyHabits } from "./useDailyHabits";
 import ErrorState from "./components/ErrorState";
+import LoadingState from "./components/LoadingState";
 
 const DailyHabitsScreen = () => {
   const {
@@ -68,6 +69,10 @@ const DailyHabitsScreen = () => {
 
   if (apiState.isError) {
     return <ErrorState />;
+  }
+
+  if (apiState.isLoading && habits.length === 0) {
+    return <LoadingState />;
   }
 
   return (

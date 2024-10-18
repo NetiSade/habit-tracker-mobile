@@ -6,15 +6,15 @@ import { persistService } from "../perssist/perssistService";
 const LOG_PREFIX = "[AuthService]";
 
 export const authService = {
-  login: async (email: string, password: string) => {
+  login: async (username: string, password: string) => {
     try {
-      const response = await apiClient.post("/login", { email, password });
-      const { accessToken, refreshToken, user } = response.data;
+      const response = await apiClient.post("/login", { username, password });
+      const { accessToken, refreshToken, userId } = response.data;
 
       await tokenStorage.storeTokens({ accessToken, refreshToken });
-      await persistService.setUserId(user.id);
+      await persistService.setUserId(userId);
 
-      return { success: true, userId: user.id };
+      return { success: true, userId };
     } catch (error) {
       console.error(LOG_PREFIX, "Login failed:", error);
       return {
@@ -93,6 +93,6 @@ export const authService = {
 
   logout: async () => {
     await tokenStorage.clearTokens();
-    await persistService.removeUserId();
+    await persistService.clearAll();
   },
 };
