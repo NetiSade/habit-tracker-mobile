@@ -32,6 +32,11 @@ export const authService = {
         password,
       });
 
+      console.log(
+        "😎🔥 ~ file: authService.ts:35 ~ signup: ~ response:",
+        response
+      );
+
       const { accessToken, refreshToken, user } = response.data;
 
       await tokenStorage.storeTokens({ accessToken, refreshToken });

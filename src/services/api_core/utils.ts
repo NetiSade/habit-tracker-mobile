@@ -1,7 +1,13 @@
+import { Platform } from "react-native";
+
 export const getApiUrl = () => {
   if (__DEV__) {
-    // Use your computer's IP address when running in development
-    return "http://0.0.0.0:3000"; // Replace X with your actual IP
+    // Use the appropriate IP address based on the platform
+    if (Platform.OS === "android") {
+      return "http://10.0.2.2:3000"; // Special IP for Android emulator
+    } else {
+      return "http://localhost:3000"; // For iOS simulator or web
+    }
   } else {
     // Use your production server URL
     return "https://your-production-server.com";

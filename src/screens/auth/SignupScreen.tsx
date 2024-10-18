@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { View, TextInput, Button, StyleSheet, Alert } from "react-native";
+import { View, StyleSheet, Alert } from "react-native";
 import { useRouter } from "expo-router";
+import { Button, TextInput } from "react-native-paper";
 
 import { authLogic } from "../../logic/authLogic";
 
@@ -26,6 +27,8 @@ export const SignupScreen = () => {
         value={username}
         onChangeText={setUsername}
         placeholder="Username"
+        mode="outlined"
+        textColor="#000"
       />
       <TextInput
         style={styles.input}
@@ -33,6 +36,8 @@ export const SignupScreen = () => {
         onChangeText={setEmail}
         placeholder="Email"
         keyboardType="email-address"
+        mode="outlined"
+        textColor="#000"
       />
       <TextInput
         style={styles.input}
@@ -40,13 +45,20 @@ export const SignupScreen = () => {
         onChangeText={setPassword}
         placeholder="Password"
         secureTextEntry
+        mode="outlined"
+        textColor="#000"
       />
-      <Button title="Sign Up" onPress={handleSignup} />
+
       <Button
-        title="Already have an account? Login"
-        color={"#000"}
-        onPress={() => router.replace("/login")}
-      />
+        onPress={handleSignup}
+        mode="contained"
+        style={styles.signupButton}
+      >
+        Sign Up
+      </Button>
+      <Button onPress={() => router.replace("/login")} mode="text">
+        Already have an account? Login
+      </Button>
     </View>
   );
 };
@@ -55,13 +67,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
-    padding: 20,
+    padding: 36,
   },
   input: {
-    height: 40,
-    borderColor: "gray",
-    borderWidth: 1,
-    marginBottom: 10,
-    paddingHorizontal: 10,
+    marginBottom: 8,
+    paddingHorizontal: 16,
+    backgroundColor: "transparent",
+  },
+  signupButton: {
+    marginTop: 32,
+    marginBottom: 8,
   },
 });
