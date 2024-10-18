@@ -87,6 +87,7 @@ const DailyHabitsScreen = () => {
           }
           ListHeaderComponentStyle={styles.listHeaderContainer}
           data={habits}
+          contentContainerStyle={styles.listContentContainer}
           renderItem={renderItem}
           keyExtractor={(item) => item.id}
           refreshing={apiState.isLoading}
@@ -128,7 +129,11 @@ const styles = StyleSheet.create({
   },
   listContainer: {
     flex: 1,
-    marginBottom: 16,
+  },
+  listContentContainer: {
+    paddingHorizontal: 16,
+    paddingBottom: 16,
+    gap: 8,
   },
   listHeaderContainer: {
     marginBottom: 16,

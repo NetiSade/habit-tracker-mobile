@@ -1,5 +1,6 @@
+import React from "react";
 import { View, StyleSheet } from "react-native";
-import { Card, Checkbox, IconButton, Title } from "react-native-paper";
+import { Card, Checkbox, IconButton, Text } from "react-native-paper";
 import { Habit } from "@/src/types/habit";
 
 interface DailyHabitItemProps {
@@ -8,12 +9,11 @@ interface DailyHabitItemProps {
   onToggle: () => void;
   onEditPress: () => void;
   onDeletePress: () => void;
-  // reorder
   onReorderPress: (() => void) | undefined;
   isReordering: boolean;
 }
 
-export const DailyHabitItem = ({
+export const DailyHabitItem: React.FC<DailyHabitItemProps> = ({
   item,
   onToggle,
   isEditMode,
@@ -21,30 +21,42 @@ export const DailyHabitItem = ({
   onDeletePress,
   onReorderPress,
   isReordering,
-}: DailyHabitItemProps) => {
+}) => {
   return (
     <Card
-      style={[styles.card, { opacity: isReordering ? 0.7 : 1 }]}
+      style={{ opacity: isReordering ? 0.7 : 1 }}
       onPress={isEditMode ? undefined : onToggle}
       onLongPress={isEditMode ? onReorderPress : undefined}
     >
       <Card.Content style={styles.cardContent}>
-        {!isEditMode && (
-          <Checkbox
-            onPress={onToggle}
-            status={item.isCompleted ? "checked" : "unchecked"}
-            uncheckedColor="black"
-            color="green"
-          />
-        )}
-        {isEditMode && (
-          <IconButton icon="drag" size={24} onLongPress={onReorderPress} />
-        )}
-        <Title
-          style={[styles.habitText, item.isCompleted && styles.completedHabit]}
-        >
-          {item.name}
-        </Title>
+        <View style={styles.leftContent}>
+          {!isEditMode && (
+            <Checkbox
+              onPress={onToggle}
+              status={item.isCompleted ? "checked" : "unchecked"}
+              uncheckedColor="black"
+              color="green"
+            />
+          )}
+          {isEditMode && (
+            <IconButton
+              icon="drag"
+              size={24}
+              onLongPress={onReorderPress}
+              style={styles.dragIcon}
+            />
+          )}
+          <Text
+            style={[
+              styles.habitText,
+              item.isCompleted && styles.completedHabit,
+            ]}
+            numberOfLines={2}
+            ellipsizeMode="tail"
+          >
+            {item.name}
+          </Text>
+        </View>
         {isEditMode && (
           <View style={styles.editActions}>
             <IconButton
@@ -52,12 +64,14 @@ export const DailyHabitItem = ({
               onPress={onEditPress}
               size={18}
               mode="contained-tonal"
+              style={styles.iconButton}
             />
             <IconButton
               icon="delete"
               onPress={onDeletePress}
               size={18}
               mode="contained-tonal"
+              style={styles.iconButton}
             />
           </View>
         )}
@@ -67,26 +81,36 @@ export const DailyHabitItem = ({
 };
 
 const styles = StyleSheet.create({
-  card: {
-    marginVertical: 8,
-    marginHorizontal: 16,
-    borderRadius: 10,
-    elevation: 2,
-  },
   cardContent: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
   },
+  leftContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    flex: 1,
+  },
   habitText: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: "500",
+    flex: 1,
+    marginLeft: 8,
   },
   completedHabit: {
     fontWeight: "normal",
   },
   editActions: {
     flexDirection: "row",
+    marginLeft: 8,
+  },
+  iconButton: {
+    paddingVertical: 0,
+    marginVertical: 0,
+  },
+  dragIcon: {
+    padding: 0,
+    margin: 0,
   },
 });
 
