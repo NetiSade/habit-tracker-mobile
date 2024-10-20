@@ -90,9 +90,17 @@ export const useDailyHabits = () => {
 
   const handleLogoutPress = async () => {
     try {
-      // TODO: Are you sure you want to logout?
-      await authLogic.logout();
-      router.replace("/login");
+      Alert.alert("Logout", "Are you sure you want to logout?", [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Logout",
+          style: "destructive",
+          onPress: async () => {
+            await authLogic.logout();
+            router.replace("/login");
+          },
+        },
+      ]);
     } catch (error) {
       console.error("Error logging out:", error);
     }
