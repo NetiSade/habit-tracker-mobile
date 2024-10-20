@@ -1,13 +1,16 @@
+import { ThemedText } from "@/components/ThemedText";
 import { View, StyleSheet } from "react-native";
 import { Title } from "react-native-paper";
 
 const EmptyState = () => {
   return (
     <View style={styles.container}>
-      <Title style={styles.emptyStateText}>No habits yet</Title>
-      <Title style={styles.emptyStateText}>
+      <ThemedText style={styles.emptyStateText} type="title">
+        No habits yet
+      </ThemedText>
+      <ThemedText style={styles.emptyStateText} type="title">
         🚀 Add habits to get started 🚀
-      </Title>
+      </ThemedText>
     </View>
   );
 };

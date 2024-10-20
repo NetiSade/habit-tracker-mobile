@@ -4,6 +4,8 @@ import { useRouter } from "expo-router";
 import { Button, TextInput } from "react-native-paper";
 
 import { authLogic } from "../../logic/authLogic";
+import { ThemedView } from "@/components/ThemedView";
+import ThemedTextInput from "@/components/ThemedTextInput";
 
 export const SignupScreen = () => {
   const [username, setUsername] = useState("");
@@ -21,32 +23,29 @@ export const SignupScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <TextInput
+    <ThemedView style={styles.container}>
+      <ThemedTextInput
         style={styles.input}
         value={username}
         onChangeText={setUsername}
         placeholder="Username"
         mode="outlined"
-        textColor="#000"
       />
-      <TextInput
+      <ThemedTextInput
         style={styles.input}
         value={email}
         onChangeText={setEmail}
         placeholder="Email"
         keyboardType="email-address"
         mode="outlined"
-        textColor="#000"
       />
-      <TextInput
+      <ThemedTextInput
         style={styles.input}
         value={password}
         onChangeText={setPassword}
         placeholder="Password"
         secureTextEntry
         mode="outlined"
-        textColor="#000"
       />
 
       <Button
@@ -59,7 +58,7 @@ export const SignupScreen = () => {
       <Button onPress={() => router.replace("/login")} mode="text">
         Already have an account? Login
       </Button>
-    </View>
+    </ThemedView>
   );
 };
 

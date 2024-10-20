@@ -2,6 +2,7 @@ import React from "react";
 import { View, StyleSheet } from "react-native";
 import { Card, Checkbox, IconButton, Text } from "react-native-paper";
 import { Habit } from "@/src/types/habit";
+import { ThemedText } from "@/components/ThemedText";
 
 interface DailyHabitItemProps {
   item: Habit;
@@ -46,7 +47,7 @@ export const DailyHabitItem: React.FC<DailyHabitItemProps> = ({
               style={styles.dragIcon}
             />
           )}
-          <Text
+          <ThemedText
             style={[
               styles.habitText,
               item.isCompleted && styles.completedHabit,
@@ -55,7 +56,7 @@ export const DailyHabitItem: React.FC<DailyHabitItemProps> = ({
             ellipsizeMode="tail"
           >
             {item.name}
-          </Text>
+          </ThemedText>
         </View>
         {isEditMode && (
           <View style={styles.editActions}>

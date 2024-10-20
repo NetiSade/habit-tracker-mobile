@@ -11,11 +11,12 @@ import { Habit } from "@/src/types/habit";
 import { AddHabitModal } from "@/src/components/modals/AddHabitModal";
 import DailyHabitItem from "./components/DailyHabitItem";
 import OptionsMenu from "./components/OptionsMenu";
-import ListHeader from "./components/ListHeader";
+import ListHeader from "./components/ListHeader/ListHeader";
 import EmptyState from "./components/EmptyState";
 import { useDailyHabits } from "./useDailyHabits";
 import ErrorState from "./components/ErrorState";
 import LoadingState from "./components/LoadingState";
+import { ThemedView } from "@/components/ThemedView";
 
 const DailyHabitsScreen = () => {
   const {
@@ -76,7 +77,7 @@ const DailyHabitsScreen = () => {
   }
 
   return (
-    <View style={styles.container}>
+    <ThemedView style={styles.container}>
       <SafeAreaView style={styles.listContainer}>
         <DraggableFlatList
           ListHeaderComponent={
@@ -116,7 +117,7 @@ const DailyHabitsScreen = () => {
         onAddSubmitted={handleAddHabit}
         onEditSubmitted={handleEditHabitSubmit}
       />
-    </View>
+    </ThemedView>
   );
 };
 
@@ -125,7 +126,6 @@ const DailyHabitsScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#E8E8E8",
   },
   listContainer: {
     flex: 1,

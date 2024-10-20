@@ -1,3 +1,5 @@
+import { ThemedText } from "@/components/ThemedText";
+import ThemedTextInput from "@/components/ThemedTextInput";
 import { Habit } from "@/src/types/habit";
 import React, { useEffect, useState } from "react";
 import { Modal, View, StyleSheet, Text } from "react-native";
@@ -47,10 +49,10 @@ export const AddHabitModal: React.FC<AddHabitModalProps> = ({
     >
       <View style={styles.centeredView}>
         <Card style={styles.modalView}>
-          <Text style={styles.modalText}>
+          <ThemedText style={styles.modalText}>
             {itemToEdit ? "Edit Habit" : "Add New Habit"}
-          </Text>
-          <TextInput
+          </ThemedText>
+          <ThemedTextInput
             value={habitName}
             style={styles.input}
             onChangeText={setHabitName}

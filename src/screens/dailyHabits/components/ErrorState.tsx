@@ -1,7 +1,7 @@
-import { Text } from "react-native";
+import { ThemedText } from "@/components/ThemedText";
 
 const ErrorState = () => {
-  return <Text>An error occurred</Text>;
+  return <ThemedText>An error occurred</ThemedText>;
 };
 
 export default ErrorState;

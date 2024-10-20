@@ -1,7 +1,13 @@
 import { useMemo } from "react";
 import { View, StyleSheet } from "react-native";
 import { Title } from "react-native-paper";
-import { formatDate } from "./utils";
+import { formatDate } from "../utils";
+import { ThemedText } from "@/components/ThemedText";
+import {
+  getRandomMotivationalText,
+  getRandomPositiveEmoji,
+  getRandomSuccessText,
+} from "./utils";
 
 interface ListHeaderProps {
   completedHabitsCount: number;
@@ -16,39 +22,6 @@ const ListHeader = ({
   const formattedDate = formatDate(clientDate);
   const isEmptyState = totalHabitsCount === 0;
 
-  const getRandomPositiveEmoji = () => {
-    const emojis = ["🚀", "🌟", "🎉", "💪", "👏", "🙌", "🔥"];
-    return emojis[Math.floor(Math.random() * emojis.length)];
-  };
-
-  const getRandomMotivationalText = () => {
-    const texts = [
-      "You can do it!",
-      "Just do it!",
-      "Let's go!",
-      "One step at a time!",
-      "Every small step counts!",
-      "Progress is progress!",
-      "Consistency creates change!",
-      "One habit at a time!",
-      "Your future self will thank you!",
-      "It's all about progress!",
-      "Don't overthink it!",
-    ];
-    return texts[Math.floor(Math.random() * texts.length)];
-  };
-
-  const getRandomSuccessText = () => {
-    const texts = [
-      "You're doing great!",
-      "Keep it up!",
-      "You're amazing!",
-      "You're unstoppable!",
-      "You're a rockstar!",
-    ];
-    return texts[Math.floor(Math.random() * texts.length)];
-  };
-
   const successMsg = useMemo(() => {
     const successEmoji = getRandomPositiveEmoji();
     const successText = getRandomSuccessText();
@@ -61,18 +34,20 @@ const ListHeader = ({
 
   return (
     <View style={styles.dateHeaderContainer}>
-      <Title style={styles.dateHeaderText}>{formattedDate}</Title>
+      <ThemedText style={styles.dateHeaderText} type="title">
+        {formattedDate}
+      </ThemedText>
 
       {!isEmptyState && (
-        <Title style={styles.successMsg}>
+        <ThemedText style={styles.successMsg} type="subtitle">
           {isAllHabitsCompleted ? successMsg : motivationalMsg}
-        </Title>
+        </ThemedText>
       )}
 
       {!isEmptyState && (
-        <Title style={styles.subtitle}>
+        <ThemedText style={styles.subtitle} type="subtitle">
           {`My Daily Habits (${completedHabitsCount} / ${totalHabitsCount})`}
-        </Title>
+        </ThemedText>
       )}
     </View>
   );
@@ -84,14 +59,13 @@ const styles = StyleSheet.create({
   },
   dateHeaderText: {
     fontSize: 20,
-    fontWeight: "bold",
-  },
-  subtitle: {
-    fontSize: 16,
   },
   successMsg: {
-    fontSize: 16,
+    marginTop: 32,
     fontStyle: "italic",
+  },
+  subtitle: {
+    marginTop: 16,
   },
 });
 

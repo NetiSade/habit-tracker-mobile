@@ -1,50 +1,72 @@
 import React, { useEffect, useState } from "react";
 import { Text } from "react-native";
-import { Stack } from "expo-router";
+import { SplashScreen, Stack } from "expo-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { authLogic } from "@/src/logic/authLogic";
 import { PaperProvider } from "react-native-paper";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { useColorScheme } from "@/hooks/useColorScheme";
+import {
+  DarkTheme,
+  DefaultTheme,
+  ThemeProvider,
+} from "@react-navigation/native";
+import { useFonts } from "expo-font";
 
 const queryClient = new QueryClient();
 
+// Prevent the splash screen from auto-hiding before asset loading is complete.
+SplashScreen.preventAutoHideAsync();
+
 export default function RootLayout() {
-  const [isLoading, setIsLoading] = useState(true);
+  const colorScheme = useColorScheme();
+  const [isFontLoaded] = useFonts({
+    SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
+  });
+  const [isAuthLoading, setIsAuthLoading] = useState(true);
 
   useEffect(() => {
-    authLogic.init().then(() => setIsLoading(false));
+    authLogic.init().then(() => setIsAuthLoading(false));
   }, []);
 
-  if (isLoading) {
+  useEffect(() => {
+    if (isFontLoaded) {
+      SplashScreen.hideAsync();
+    }
+  }, [isFontLoaded]);
+
+  if (isAuthLoading || !isFontLoaded) {
     return <Text>Loading...</Text>;
   }
 
   return (
     <QueryClientProvider client={queryClient}>
-      <PaperProvider>
-        <GestureHandlerRootView style={{ flex: 1 }}>
-          <Stack>
-            <Stack.Screen
-              name="index"
-              options={{
-                title: "Home",
-              }}
-            />
-            <Stack.Screen
-              name="login"
-              options={{
-                title: "Login",
-              }}
-            />
-            <Stack.Screen
-              name="signup"
-              options={{
-                title: "Signup",
-              }}
-            />
-          </Stack>
-        </GestureHandlerRootView>
-      </PaperProvider>
+      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+        <PaperProvider>
+          <GestureHandlerRootView style={{ flex: 1 }}>
+            <Stack>
+              <Stack.Screen
+                name="index"
+                options={{
+                  title: "Home",
+                }}
+              />
+              <Stack.Screen
+                name="login"
+                options={{
+                  title: "Login",
+                }}
+              />
+              <Stack.Screen
+                name="signup"
+                options={{
+                  title: "Signup",
+                }}
+              />
+            </Stack>
+          </GestureHandlerRootView>
+        </PaperProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }
