@@ -1,8 +1,5 @@
-import { ThemedView } from "@/components/ThemedView";
 import { useState } from "react";
-import { View } from "react-native";
-import { IconButton } from "react-native-paper";
-import { Menu } from "react-native-paper";
+import { IconButton, Menu } from "react-native-paper";
 
 interface OptionsMenuProps {
   toggleEditMode: () => void;
