@@ -54,7 +54,14 @@ const DailyHabitsScreen = () => {
     });
   }, [navigation, isEditMode, toggleEditMode, handleLogoutPress]);
 
-  const renderItem = ({ item, drag, isActive }: RenderItemParams<Habit>) => (
+  const renderItem = ({
+    item,
+    drag,
+    isActive,
+    getIndex,
+  }: RenderItemParams<Habit>) => (
+    
+
     <DailyHabitItem
       item={item}
       onToggle={() => toggleHabit(item)}
@@ -80,12 +87,16 @@ const DailyHabitsScreen = () => {
 
   return (
     <ThemedView style={styles.container}>
-      <ListHeader
-        completedHabitsCount={completedHabitsCount}
-        totalHabitsCount={habits.length}
-        style={styles.listHeaderContainer}
-      />
-      <Divider style={styles.divider} />
+      {!isEditMode && (
+        <>
+          <ListHeader
+            completedHabitsCount={completedHabitsCount}
+            totalHabitsCount={habits.length}
+            style={styles.listHeaderContainer}
+          />
+          <Divider style={styles.divider} />
+        </>
+      )}
       <SafeAreaView style={styles.listContainer}>
         <DraggableFlatList
           data={habits}
@@ -141,7 +152,7 @@ const styles = StyleSheet.create({
     marginVertical: 16,
   },
   divider: {
-    marginVertical: 16,
+    marginTop: 16,
   },
   addButton: {
     margin: 32,

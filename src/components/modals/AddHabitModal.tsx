@@ -2,7 +2,7 @@ import { ThemedText } from "@/components/ThemedText";
 import ThemedTextInput from "@/components/ThemedTextInput";
 import { Habit } from "@/src/types/habit";
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, Text } from "react-native";
+import { View, StyleSheet, Text, TextInputBase } from "react-native";
 import { Button, Card, Modal } from "react-native-paper";
 
 interface AddHabitModalProps {
@@ -45,28 +45,30 @@ export const AddHabitModal: React.FC<AddHabitModalProps> = ({
   return (
     <Modal visible={visible} onDismiss={handleClose}>
       <Card style={styles.modalView}>
-        <ThemedText style={styles.title}>
-          {itemToEdit ? "Edit Habit" : "Add New Habit"}
-        </ThemedText>
-        <ThemedTextInput
-          style={styles.input}
-          value={habitName}
-          onChangeText={setHabitName}
-          autoFocus
-          placeholder="Enter habit name"
-        />
-        <View style={styles.buttonContainer}>
-          <Button
-            onPress={handleAddOrUpdate}
-            mode="contained"
-            disabled={!habitName.trim()}
-          >
-            {itemToEdit ? "Update" : "Add"}
-          </Button>
-          <Button onPress={handleClose} mode="text">
-            Cancel
-          </Button>
-        </View>
+        <Card.Content>
+          <ThemedText style={styles.title}>
+            {itemToEdit ? "Edit Habit" : "Add New Habit"}
+          </ThemedText>
+          <ThemedTextInput
+            style={styles.input}
+            value={habitName}
+            onChangeText={setHabitName}
+            autoFocus
+            placeholder="Enter habit name"
+          />
+          <View style={styles.buttonContainer}>
+            <Button
+              onPress={handleAddOrUpdate}
+              mode="contained"
+              disabled={!habitName.trim()}
+            >
+              {itemToEdit ? "Update" : "Add"}
+            </Button>
+            <Button onPress={handleClose} mode="text" style={styles.textButton}>
+              Cancel
+            </Button>
+          </View>
+        </Card.Content>
       </Card>
     </Modal>
   );
@@ -87,5 +89,8 @@ const styles = StyleSheet.create({
   },
   input: {
     marginHorizontal: 16,
+  },
+  textButton: {
+    marginTop: 8,
   },
 });
