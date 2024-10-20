@@ -23,10 +23,15 @@ const ListHeader = ({
   const formattedDate = formatDate(clientDate);
   const isEmptyState = totalHabitsCount === 0;
 
+  // const successMsg = useMemo(() => {
+  //   const successEmoji = getRandomPositiveEmoji();
+  //   const successText = getRandomSuccessText();
+  //   return `${successEmoji} ${successText} ${successEmoji}`;
+  // }, []);
+
   const successMsg = useMemo(() => {
     const successEmoji = getRandomPositiveEmoji();
-    const successText = getRandomSuccessText();
-    return `${successEmoji} ${successText} ${successEmoji}`;
+    return `All done for today! 🎉${successEmoji}`;
   }, []);
 
   const motivationalMsg = useMemo(() => getRandomMotivationalText(), []);
