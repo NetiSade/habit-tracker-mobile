@@ -1,11 +1,7 @@
-import { ThemedView } from "@/components/ThemedView";
 import { useState } from "react";
-import { Platform } from "react-native";
+import { View } from "react-native";
 import { IconButton, Menu } from "react-native-paper";
-import {
-  SafeAreaView,
-  useSafeAreaInsets,
-} from "react-native-safe-area-context";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 interface OptionsMenuProps {
   toggleEditMode: () => void;
@@ -21,8 +17,6 @@ const OptionsMenu = ({
   const [isVisible, setIsVisible] = useState(false);
   const insets = useSafeAreaInsets();
 
-  const statusBarHeight = Platform.OS === "android" ? insets.top : 0; // workaround for fix menu overflow on android
-
   const openMenu = () => setIsVisible(true);
   const closeMenu = () => setIsVisible(false);
 
@@ -37,9 +31,9 @@ const OptionsMenu = ({
   };
 
   return (
-    <ThemedView>
+    <View>
       <Menu
-        statusBarHeight={statusBarHeight}
+        statusBarHeight={insets.top}
         visible={isVisible}
         onDismiss={closeMenu}
         anchor={<IconButton icon={menuIcon} onPress={handleIconMenuPress} />}
@@ -61,7 +55,7 @@ const OptionsMenu = ({
           leadingIcon="logout"
         />
       </Menu>
-    </ThemedView>
+    </View>
   );
 };
 
