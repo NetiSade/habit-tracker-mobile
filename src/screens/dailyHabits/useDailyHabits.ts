@@ -7,6 +7,7 @@ import { useAppStore } from "@/src/store";
 import { Habit } from "@/src/types/habit";
 import { habitsLogic } from "@/src/logic/habitsLogic";
 import { authLogic } from "@/src/logic/authLogic";
+import { useRouter } from "expo-router";
 
 const QUERY_KEY = "habits";
 
@@ -24,6 +25,8 @@ export const useDailyHabits = () => {
     isVisible: false,
     itemToEdit: null,
   });
+
+  const router = useRouter();
 
   // Queries
   const apiState = useQuery({
@@ -88,6 +91,7 @@ export const useDailyHabits = () => {
     try {
       // TODO: Are you sure you want to logout?
       await authLogic.logout();
+      router.replace("/login");
     } catch (error) {
       console.error("Error logging out:", error);
     }

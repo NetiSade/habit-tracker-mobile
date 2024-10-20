@@ -16,10 +16,12 @@ export const authLogic = {
 
       if (res && res.userId) {
         useAppStore.getState().onLoginSuccess(res.userId);
+        return true;
       }
     } catch (error) {
       useAppStore.getState().onLoginFailure();
     }
+    return false;
   },
 
   login: async (username: string, password: string) => {

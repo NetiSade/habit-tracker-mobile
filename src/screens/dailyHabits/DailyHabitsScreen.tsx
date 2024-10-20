@@ -52,12 +52,7 @@ const DailyHabitsScreen = () => {
     });
   }, [navigation, isEditMode, toggleEditMode, handleLogoutPress]);
 
-  const renderItem = ({
-    item,
-    drag,
-    isActive,
-    getIndex,
-  }: RenderItemParams<Habit>) => (
+  const renderItem = ({ item, drag, isActive }: RenderItemParams<Habit>) => (
     <DailyHabitItem
       item={item}
       onToggle={() => toggleHabit(item)}

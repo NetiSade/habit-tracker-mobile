@@ -1,8 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { Text } from "react-native";
+import React, { useEffect } from "react";
 import { SplashScreen, Stack } from "expo-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { authLogic } from "@/src/logic/authLogic";
 import { PaperProvider } from "react-native-paper";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useColorScheme } from "@/hooks/useColorScheme";
@@ -12,6 +10,7 @@ import {
   ThemeProvider,
 } from "@react-navigation/native";
 import { useFonts } from "expo-font";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 const queryClient = new QueryClient();
 
@@ -23,21 +22,12 @@ export default function RootLayout() {
   const [isFontLoaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
-  const [isAuthLoading, setIsAuthLoading] = useState(true);
-
-  useEffect(() => {
-    authLogic.init().then(() => setIsAuthLoading(false));
-  }, []);
 
   useEffect(() => {
     if (isFontLoaded) {
       SplashScreen.hideAsync();
     }
   }, [isFontLoaded]);
-
-  if (isAuthLoading || !isFontLoaded) {
-    return <Text>Loading...</Text>;
-  }
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -46,6 +36,10 @@ export default function RootLayout() {
           <GestureHandlerRootView style={{ flex: 1 }}>
             <Stack>
               <Stack.Screen name="index" options={{ headerShown: false }} />
+              <Stack.Screen
+                name="dailyHabits"
+                options={{ title: "Daily Habits" }}
+              />
               <Stack.Screen
                 name="login"
                 options={{

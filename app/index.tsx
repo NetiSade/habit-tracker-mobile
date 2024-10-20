@@ -1,11 +1,20 @@
-import React from "react";
+import React, { useEffect } from "react";
 
-import { useAppStore } from "@/src/store";
-import DailyHabitsScreen from "../src/screens/dailyHabits/DailyHabits";
-import { SignupScreen } from "@/src/screens/auth/SignupScreen";
+import { ActivityIndicator } from "react-native";
+import { authLogic } from "@/src/logic/authLogic";
+import { useRouter } from "expo-router";
 
 export default function Home() {
-  const { isAuthenticated } = useAppStore();
+  const router = useRouter();
+  useEffect(() => {
+    authLogic.init().then((res) => {
+      if (res) {
+        router.replace("/dailyHabits");
+      } else {
+        router.replace("/signup");
+      }
+    });
+  }, []);
 
-  return isAuthenticated ? <DailyHabitsScreen /> : <SignupScreen />;
+  return <ActivityIndicator style={{ flex: 1, justifyContent: "center" }} />;
 }

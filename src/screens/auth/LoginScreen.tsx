@@ -15,7 +15,7 @@ const LoginScreen = () => {
   const handleLogin = async () => {
     const res = await authLogic.login(username, password);
     if (res.success) {
-      router.replace("/");
+      router.replace("/dailyHabits");
     } else {
       Alert.alert(
         "Login Failed",

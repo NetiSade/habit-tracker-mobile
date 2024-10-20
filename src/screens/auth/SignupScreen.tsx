@@ -16,7 +16,7 @@ export const SignupScreen = () => {
   const handleSignup = async () => {
     const res = await authLogic.signup(username, email, password);
     if (res.success) {
-      router.replace("/");
+      router.replace("/dailyHabits");
     } else {
       Alert.alert("Signup Failed");
     }
