@@ -61,7 +61,7 @@ const DailyHabitsScreen = () => {
         handleEditHabitPress(item);
       }}
       onDeletePress={() => {
-        handleDeleteHabit(item.id);
+        handleDeleteHabit(item.id, item.name);
       }}
       onReorderPress={isEditMode ? drag : undefined}
       isReordering={isActive}

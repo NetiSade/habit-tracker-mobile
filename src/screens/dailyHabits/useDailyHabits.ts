@@ -8,6 +8,7 @@ import { Habit } from "@/src/types/habit";
 import { habitsLogic } from "@/src/logic/habitsLogic";
 import { authLogic } from "@/src/logic/authLogic";
 import { useRouter } from "expo-router";
+import { Alert } from "react-native";
 
 const QUERY_KEY = "habits";
 
@@ -99,12 +100,26 @@ export const useDailyHabits = () => {
 
   const handleDeleteHabit = async (habitId: string) => {
     try {
-      // TODO: Are you sure you want to delete this habit?
       await habitsLogic.deleteHabit(habitId);
       queryClient.invalidateQueries({ queryKey: [QUERY_KEY] });
     } catch (error) {
       console.error("Error deleting habit:", error);
     }
+  };
+
+  const handleDeleteHabitAlert = (habitId: string, habitName: string) => {
+    Alert.alert(
+      "Delete Habit",
+      `Are you sure you want to delete "${habitName}"?`,
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: () => handleDeleteHabit(habitId),
+        },
+      ]
+    );
   };
 
   const handleEditHabitPress = (habit: Habit) => {
@@ -146,7 +161,7 @@ export const useDailyHabits = () => {
     handleEditHabitSubmit,
     handleEditHabitPress,
     handleCreateHabitPress,
-    handleDeleteHabit,
+    handleDeleteHabit: handleDeleteHabitAlert,
     handleOnDragEnd,
     handleModalClose,
     handleLogoutPress,

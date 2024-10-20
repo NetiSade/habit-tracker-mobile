@@ -39,8 +39,6 @@ const OptionsMenu = ({
   return (
     <ThemedView>
       <Menu
-        anchorPosition="top"
-        mode="elevated"
         statusBarHeight={statusBarHeight}
         visible={isVisible}
         onDismiss={closeMenu}

@@ -38,7 +38,9 @@ export default function RootLayout() {
               <Stack.Screen name="index" options={{ headerShown: false }} />
               <Stack.Screen
                 name="dailyHabits"
-                options={{ title: "Daily Habits" }}
+                options={{
+                  title: "Daily Habits",
+                }}
               />
               <Stack.Screen
                 name="login"
