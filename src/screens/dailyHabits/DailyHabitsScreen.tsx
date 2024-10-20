@@ -1,6 +1,5 @@
 import React, { useLayoutEffect } from "react";
 import { View, StyleSheet, RefreshControl } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "expo-router";
 import { Divider, FAB } from "react-native-paper";
 import DraggableFlatList, {
@@ -128,9 +127,6 @@ const DailyHabitsScreen = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-  },
-  listContainer: {
     flex: 1,
   },
   listContentContainer: {
