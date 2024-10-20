@@ -33,7 +33,7 @@ export const AddHabitModal: React.FC<AddHabitModalProps> = ({
       } else {
         onAddSubmitted(habitName.trim());
       }
-      onClose();
+      handleClose();
     }
   };
 

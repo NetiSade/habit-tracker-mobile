@@ -60,8 +60,6 @@ const DailyHabitsScreen = () => {
     isActive,
     getIndex,
   }: RenderItemParams<Habit>) => (
-    
-
     <DailyHabitItem
       item={item}
       onToggle={() => toggleHabit(item)}
@@ -94,7 +92,7 @@ const DailyHabitsScreen = () => {
             totalHabitsCount={habits.length}
             style={styles.listHeaderContainer}
           />
-          <Divider style={styles.divider} />
+          <Divider />
         </>
       )}
       <SafeAreaView style={styles.listContainer}>
@@ -144,15 +142,10 @@ const styles = StyleSheet.create({
   },
   listContentContainer: {
     paddingHorizontal: 16,
-    paddingBottom: 16,
     gap: 8,
-    justifyContent: "center",
   },
   listHeaderContainer: {
     marginVertical: 16,
-  },
-  divider: {
-    marginTop: 16,
   },
   addButton: {
     margin: 32,

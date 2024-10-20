@@ -60,7 +60,6 @@ const styles = StyleSheet.create({
   input: {
     marginBottom: 8,
     paddingHorizontal: 16,
-    backgroundColor: "transparent",
   },
   loginButton: {
     marginTop: 16,

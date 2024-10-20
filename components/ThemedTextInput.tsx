@@ -12,7 +12,7 @@ const ThemedTextInput = (props: ThemedTextInputProps) => {
     "text"
   );
 
-  return <TextInput {...props} style={{ color }} />;
+  return <TextInput {...props} style={[props.style, { color }]} />;
 };
 
 export default ThemedTextInput;
