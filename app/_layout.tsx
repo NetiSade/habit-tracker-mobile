@@ -45,12 +45,7 @@ export default function RootLayout() {
         <PaperProvider>
           <GestureHandlerRootView style={{ flex: 1 }}>
             <Stack>
-              <Stack.Screen
-                name="index"
-                options={{
-                  title: "Home",
-                }}
-              />
+              <Stack.Screen name="index" options={{ headerShown: false }} />
               <Stack.Screen
                 name="login"
                 options={{

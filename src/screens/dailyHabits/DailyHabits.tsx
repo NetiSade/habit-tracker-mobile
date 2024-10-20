@@ -2,7 +2,7 @@ import React, { useLayoutEffect } from "react";
 import { View, StyleSheet, RefreshControl } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "expo-router";
-import { FAB } from "react-native-paper";
+import { Divider, FAB } from "react-native-paper";
 import DraggableFlatList, {
   RenderItemParams,
 } from "react-native-draggable-flatlist";
@@ -49,6 +49,8 @@ const DailyHabitsScreen = () => {
           onLogoutPress={handleLogoutPress}
         />
       ),
+      headerTitle: "Daily Habits",
+      headerShown: true,
     });
   }, [navigation, isEditMode, toggleEditMode, handleLogoutPress]);
 
@@ -78,15 +80,14 @@ const DailyHabitsScreen = () => {
 
   return (
     <ThemedView style={styles.container}>
+      <ListHeader
+        completedHabitsCount={completedHabitsCount}
+        totalHabitsCount={habits.length}
+        style={styles.listHeaderContainer}
+      />
+      <Divider style={styles.divider} />
       <SafeAreaView style={styles.listContainer}>
         <DraggableFlatList
-          ListHeaderComponent={
-            <ListHeader
-              completedHabitsCount={completedHabitsCount}
-              totalHabitsCount={habits.length}
-            />
-          }
-          ListHeaderComponentStyle={styles.listHeaderContainer}
           data={habits}
           contentContainerStyle={styles.listContentContainer}
           renderItem={renderItem}
@@ -105,7 +106,7 @@ const DailyHabitsScreen = () => {
 
       <FAB
         icon="plus"
-        label="Add a daily habit"
+        label={habits.length === 0 ? "Add a daily habit" : ""}
         onPress={handleCreateHabitPress}
         style={styles.addButton}
       />
@@ -134,14 +135,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingBottom: 16,
     gap: 8,
+    justifyContent: "center",
   },
   listHeaderContainer: {
-    marginBottom: 16,
+    marginVertical: 16,
+  },
+  divider: {
+    marginVertical: 16,
   },
   addButton: {
-    position: "absolute",
-    margin: 16,
-    bottom: 0,
+    margin: 32,
+    alignSelf: "flex-end",
   },
 });
 

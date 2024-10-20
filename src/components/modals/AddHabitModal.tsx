@@ -2,8 +2,8 @@ import { ThemedText } from "@/components/ThemedText";
 import ThemedTextInput from "@/components/ThemedTextInput";
 import { Habit } from "@/src/types/habit";
 import React, { useEffect, useState } from "react";
-import { Modal, View, StyleSheet, Text } from "react-native";
-import { Button, Card, TextInput } from "react-native-paper";
+import { View, StyleSheet, Text } from "react-native";
+import { Button, Card, Modal } from "react-native-paper";
 
 interface AddHabitModalProps {
   visible: boolean;
@@ -37,73 +37,55 @@ export const AddHabitModal: React.FC<AddHabitModalProps> = ({
     }
   };
 
+  const handleClose = () => {
+    setHabitName("");
+    onClose();
+  };
+
   return (
-    <Modal
-      animationType="fade"
-      transparent={true}
-      visible={visible}
-      onRequestClose={onClose}
-      onDismiss={() => {
-        setHabitName("");
-      }}
-    >
-      <View style={styles.centeredView}>
-        <Card style={styles.modalView}>
-          <ThemedText style={styles.modalText}>
-            {itemToEdit ? "Edit Habit" : "Add New Habit"}
-          </ThemedText>
-          <ThemedTextInput
-            value={habitName}
-            style={styles.input}
-            onChangeText={setHabitName}
-            autoFocus
-            placeholder="Enter habit name"
-          />
-          <View style={styles.buttonContainer}>
-            <Button
-              onPress={handleAddOrUpdate}
-              mode="contained"
-              disabled={!habitName.trim()}
-            >
-              {itemToEdit ? "Update" : "Add"}
-            </Button>
-            <Button onPress={onClose} mode="text">
-              Cancel
-            </Button>
-          </View>
-        </Card>
-      </View>
+    <Modal visible={visible} onDismiss={handleClose}>
+      <Card style={styles.modalView}>
+        <ThemedText style={styles.title}>
+          {itemToEdit ? "Edit Habit" : "Add New Habit"}
+        </ThemedText>
+        <ThemedTextInput
+          style={styles.input}
+          value={habitName}
+          onChangeText={setHabitName}
+          autoFocus
+          placeholder="Enter habit name"
+        />
+        <View style={styles.buttonContainer}>
+          <Button
+            onPress={handleAddOrUpdate}
+            mode="contained"
+            disabled={!habitName.trim()}
+          >
+            {itemToEdit ? "Update" : "Add"}
+          </Button>
+          <Button onPress={handleClose} mode="text">
+            Cancel
+          </Button>
+        </View>
+      </Card>
     </Modal>
   );
 };
 
 const styles = StyleSheet.create({
-  centeredView: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-  },
   modalView: {
+    flexGrow: 1,
     padding: 16,
+    marginHorizontal: 32,
   },
-  input: {
-    width: 200,
-    marginHorizontal: 8,
-    marginVertical: 16,
-    borderWidth: 1,
+  title: {
+    textAlign: "center",
+    marginBottom: 16,
   },
   buttonContainer: {
-    marginTop: 8,
+    marginTop: 16,
   },
-  textStyle: {
-    color: "white",
-    fontWeight: "bold",
-    textAlign: "center",
-  },
-  modalText: {
-    textAlign: "center",
-    fontWeight: "bold",
-    fontSize: 18,
+  input: {
+    marginHorizontal: 16,
   },
 });

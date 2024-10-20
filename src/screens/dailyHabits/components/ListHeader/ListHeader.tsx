@@ -1,6 +1,5 @@
 import { useMemo } from "react";
-import { View, StyleSheet } from "react-native";
-import { Title } from "react-native-paper";
+import { View, StyleSheet, StyleProp, ViewStyle } from "react-native";
 import { formatDate } from "../utils";
 import { ThemedText } from "@/components/ThemedText";
 import {
@@ -12,11 +11,13 @@ import {
 interface ListHeaderProps {
   completedHabitsCount: number;
   totalHabitsCount: number;
+  style?: StyleProp<ViewStyle>;
 }
 
 const ListHeader = ({
   completedHabitsCount,
   totalHabitsCount,
+  style,
 }: ListHeaderProps) => {
   const clientDate = new Date();
   const formattedDate = formatDate(clientDate);
@@ -33,7 +34,13 @@ const ListHeader = ({
   const isAllHabitsCompleted = completedHabitsCount === totalHabitsCount;
 
   return (
-    <View style={styles.dateHeaderContainer}>
+    <View style={[styles.dateHeaderContainer, style]}>
+      {!isEmptyState && (
+        <ThemedText style={styles.subtitle} type="subtitle">
+          My Daily Habits
+        </ThemedText>
+      )}
+
       <ThemedText style={styles.dateHeaderText} type="title">
         {formattedDate}
       </ThemedText>
@@ -41,12 +48,6 @@ const ListHeader = ({
       {!isEmptyState && (
         <ThemedText style={styles.successMsg} type="subtitle">
           {isAllHabitsCompleted ? successMsg : motivationalMsg}
-        </ThemedText>
-      )}
-
-      {!isEmptyState && (
-        <ThemedText style={styles.subtitle} type="subtitle">
-          {`My Daily Habits (${completedHabitsCount} / ${totalHabitsCount})`}
         </ThemedText>
       )}
     </View>
@@ -61,11 +62,12 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   successMsg: {
-    marginTop: 32,
+    fontSize: 16,
+    marginTop: 8,
     fontStyle: "italic",
   },
   subtitle: {
-    marginTop: 16,
+    fontSize: 16,
   },
 });
 

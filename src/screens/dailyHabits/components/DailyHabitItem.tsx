@@ -35,7 +35,6 @@ export const DailyHabitItem: React.FC<DailyHabitItemProps> = ({
             <Checkbox
               onPress={onToggle}
               status={item.isCompleted ? "checked" : "unchecked"}
-              uncheckedColor="black"
               color="green"
             />
           )}

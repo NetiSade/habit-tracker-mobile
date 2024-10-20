@@ -1,3 +1,4 @@
+import { ThemedView } from "@/components/ThemedView";
 import { useState } from "react";
 import { View } from "react-native";
 import { IconButton } from "react-native-paper";
@@ -30,30 +31,28 @@ const OptionsMenu = ({
   };
 
   return (
-    <View>
-      <Menu
-        visible={isVisible}
-        onDismiss={closeMenu}
-        anchor={<IconButton icon={menuIcon} onPress={handleIconMenuPress} />}
-      >
-        <Menu.Item
-          onPress={() => {
-            toggleEditMode();
-            closeMenu();
-          }}
-          title="Edit"
-          leadingIcon="pencil"
-        />
-        <Menu.Item
-          onPress={() => {
-            onLogoutPress();
-            closeMenu();
-          }}
-          title="Logout"
-          leadingIcon="logout"
-        />
-      </Menu>
-    </View>
+    <Menu
+      visible={isVisible}
+      onDismiss={closeMenu}
+      anchor={<IconButton icon={menuIcon} onPress={handleIconMenuPress} />}
+    >
+      <Menu.Item
+        onPress={() => {
+          toggleEditMode();
+          closeMenu();
+        }}
+        title="Edit"
+        leadingIcon="pencil"
+      />
+      <Menu.Item
+        onPress={() => {
+          onLogoutPress();
+          closeMenu();
+        }}
+        title="Logout"
+        leadingIcon="logout"
+      />
+    </Menu>
   );
 };
 
