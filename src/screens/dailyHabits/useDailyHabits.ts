@@ -124,6 +124,7 @@ export const useDailyHabits = () => {
         {
           text: "Delete",
           style: "destructive",
+
           onPress: () => handleDeleteHabit(habitId),
         },
       ]
