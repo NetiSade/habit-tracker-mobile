@@ -18,6 +18,8 @@ export const authLogic = {
         useAppStore.getState().onLoginSuccess(res.userId);
         return true;
       }
+
+      return false;
     } catch (error) {
       useAppStore.getState().onLoginFailure();
     }
@@ -39,8 +41,8 @@ export const authLogic = {
   signup: async (username: string, email: string, password: string) => {
     const res = await authService.signup(username, email, password);
 
-    if (res.success) {
-      useAppStore.getState().onLoginSuccess(res.userId);
+    if (res.error && res.userId) {
+      useAppStore.getState().onRegisterSuccess(res.userId);
     }
 
     return res;

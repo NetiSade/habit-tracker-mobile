@@ -6,9 +6,12 @@ import { persistService } from "../perssist/perssistService";
 const LOG_PREFIX = "[AuthService]";
 
 export const authService = {
-  login: async (username: string, password: string) => {
+  login: async (email: string, password: string) => {
     try {
-      const response = await apiClient.post("/login", { username, password });
+      const response = await apiClient.post("/auth/login", {
+        email,
+        password,
+      });
       const { accessToken, refreshToken, userId } = response.data;
 
       await tokenStorage.storeTokens({ accessToken, refreshToken });
@@ -26,23 +29,28 @@ export const authService = {
 
   signup: async (username: string, email: string, password: string) => {
     try {
-      const response = await apiClient.post("/signup", {
+      console.log("signup");
+      const response = await apiClient.post("auth/register", {
         username,
         email,
         password,
       });
 
       console.log(
-        "😎🔥 ~ file: authService.ts:35 ~ signup: ~ response:",
-        response
+        "😎🔥 ~ file: authService.ts:39 ~ signup: ~ response:",
+        response.data
       );
 
-      const { accessToken, refreshToken, user } = response.data;
+      if (!response.data.userId) {
+        throw new Error("User ID not found in response");
+      }
 
-      await tokenStorage.storeTokens({ accessToken, refreshToken });
-      await persistService.setUserId(user.id);
+      await persistService.setUserId(response.data.userId);
 
-      return { success: true, userId: user.id };
+      return {
+        success: true,
+        userId: response.data.userId,
+      };
     } catch (error) {
       console.error(LOG_PREFIX, "Signup failed:", error);
       return {
@@ -63,7 +71,7 @@ export const authService = {
       }
 
       try {
-        const response = await apiClient.get("/verify-token");
+        const response = await apiClient.get("/auth/verify-token");
         await persistService.setUserId(response.data.userId);
 
         return { success: response.data.isValid, userId: response.data.userId };
@@ -71,9 +79,12 @@ export const authService = {
         if (axios.isAxiosError(error)) {
           if (error.response && error.response.status === 401) {
             try {
-              const refreshResponse = await apiClient.post("/refresh-token", {
-                refreshToken,
-              });
+              const refreshResponse = await apiClient.post(
+                "/auth/refresh-token",
+                {
+                  refreshToken,
+                }
+              );
               const newAccessToken = refreshResponse.data.accessToken;
               await tokenStorage.storeTokens({
                 accessToken: newAccessToken,

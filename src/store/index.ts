@@ -6,8 +6,11 @@ type AppState = AuthState & HabitState;
 
 export const useAppStore = create<AppState>((set) => ({
   // Auth state
+  isEmailVerified: false,
   isAuthenticated: false,
   userId: null,
+  onRegisterSuccess: (userId: string) =>
+    set({ userId, isAuthenticated: false }),
   onLoginSuccess: (userId: string) => set({ isAuthenticated: true, userId }),
   onLoginFailure: () => set({ isAuthenticated: false, habits: [] }),
   onLogout: () =>

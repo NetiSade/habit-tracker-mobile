@@ -8,12 +8,12 @@ import { ThemedView } from "@/components/ThemedView";
 import ThemedTextInput from "@/components/ThemedTextInput";
 
 const LoginScreen = () => {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
 
   const handleLogin = async () => {
-    const res = await authLogic.login(username, password);
+    const res = await authLogic.login(email, password);
     if (res.success) {
       router.replace("/dailyHabits");
     } else {
@@ -28,9 +28,10 @@ const LoginScreen = () => {
     <ThemedView style={styles.container}>
       <ThemedTextInput
         style={styles.input}
-        value={username}
-        onChangeText={setUsername}
-        placeholder="Username"
+        value={email}
+        onChangeText={setEmail}
+        placeholder="Email"
+        keyboardType="email-address"
         mode="outlined"
       />
       <ThemedTextInput
